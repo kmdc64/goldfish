@@ -40,9 +40,35 @@ class Aproject_goldfishCharacter : public ACharacter
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
+
+	/** Shoot Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* ShootAction;
+
+	/** Reload Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* ReloadAction;
+
+	// Reference to weapon
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<class AActor> m_cWeapon;
 	
 public:
 	Aproject_goldfishCharacter();
+
+	// Reload montage
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* m_pReloadMontage;
+
+	// Shooting montage
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* m_pShootMontage;
+
+	void Shoot();
+
+	void Reload();
+
+	void EquipWeapon();
 
 protected:
 	virtual void BeginPlay();

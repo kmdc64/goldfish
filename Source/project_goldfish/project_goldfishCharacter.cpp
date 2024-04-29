@@ -54,7 +54,7 @@ void Aproject_goldfishCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
+	EquipWeapon();
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -73,6 +73,12 @@ void Aproject_goldfishCharacter::SetupPlayerInputComponent(UInputComponent* Play
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &Aproject_goldfishCharacter::Look);
+
+		// Shoot
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &Aproject_goldfishCharacter::Shoot);
+
+		// Reload
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &Aproject_goldfishCharacter::Reload);
 	}
 	else
 	{
@@ -115,4 +121,45 @@ void Aproject_goldfishCharacter::SetHasRifle(bool bNewHasRifle)
 bool Aproject_goldfishCharacter::GetHasRifle()
 {
 	return bHasRifle;
+}
+
+void Aproject_goldfishCharacter::Shoot()
+{
+	UAnimInstance* pAnimInstance = GetMesh1P()->GetAnimInstance();
+	if (pAnimInstance != nullptr)
+	{
+		if (m_pReloadMontage != nullptr && m_pShootMontage != nullptr)
+		{
+			// Interrupt reload montage.
+			pAnimInstance->Montage_Stop(0.2f, m_pReloadMontage);
+
+			// Play reload montage.
+			pAnimInstance->Montage_Play(m_pShootMontage, 1.0f);
+		}
+	}
+}
+
+void Aproject_goldfishCharacter::Reload()
+{
+	UAnimInstance* pAnimInstance = GetMesh1P()->GetAnimInstance();
+	if (pAnimInstance != nullptr)
+	{
+		if (m_pReloadMontage != nullptr)
+		{
+			// Play reload montage.
+			pAnimInstance->Montage_Play(m_pReloadMontage, 1.0f);
+		}
+	}
+}
+
+void Aproject_goldfishCharacter::EquipWeapon()
+{
+	APlayerController* pController = Cast<APlayerController>(GetController());
+	const FRotator pRotation = pController->PlayerCameraManager->GetCameraRotation();
+	const FVector pLocation = GetOwner()->GetActorLocation();
+
+	FActorSpawnParameters pSpawnParams;
+	pSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	AActor* pWeapon = GetWorld()->SpawnActor<AActor>(m_cWeapon, pLocation, pRotation, pSpawnParams);
 }
