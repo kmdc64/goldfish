@@ -41,14 +41,6 @@ class Aproject_goldfishCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
-	/** Shoot Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* ShootAction;
-
-	/** Reload Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* ReloadAction;
-
 	// Reference to weapon
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta=(AllowPrivateAccess = "true"))
 	TSubclassOf<class AActor> m_cWeapon;
@@ -77,7 +69,15 @@ public:
 		
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* LookAction;
+	UInputAction* LookAction;
+
+	/** Shoot Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ShootAction;
+
+	/** Reload Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ReloadAction;
 
 	/** Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
