@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "TP_WeaponComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -161,5 +162,8 @@ void Aproject_goldfishCharacter::EquipWeapon()
 	FActorSpawnParameters pSpawnParams;
 	pSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	AActor* pWeapon = GetWorld()->SpawnActor<AActor>(m_cWeapon, pLocation, pRotation, pSpawnParams);
+	AActor* pSpawnedWeapon = GetWorld()->SpawnActor<AActor>(m_cWeapon, pLocation, pRotation, pSpawnParams);
+
+	UTP_WeaponComponent* pWeapon = Cast<UTP_WeaponComponent>(pSpawnedWeapon->GetComponentByClass(UTP_WeaponComponent::StaticClass()));
+	pWeapon->AttachWeapon(this);
 }

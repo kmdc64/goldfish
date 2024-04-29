@@ -75,7 +75,7 @@ void UTP_WeaponComponent::AttachWeapon(Aproject_goldfishCharacter* TargetCharact
 
 	// Attach the weapon to the First Person Character
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
+	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("WeaponSocket")));
 	
 	// switch bHasRifle so the animation blueprint can switch to another animation set
 	Character->SetHasRifle(true);
