@@ -15,10 +15,6 @@ class PROJECT_GOLDFISH_API UTP_WeaponComponent : public USkeletalMeshComponent
 	GENERATED_BODY()
 
 public:
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class Aproject_goldfishProjectile> ProjectileClass;
-
 	// Weapon sounds
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta=(AllowPrivateAccess = "true"))
 	USoundBase* m_pFireSound;
@@ -31,15 +27,11 @@ public:
 
 	// Muzzle offset
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta=(AllowPrivateAccess = "true"))
-	FVector m_vMuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
+	FVector m_vMuzzleOffset;
 
 	// Muzzle flash
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX", meta=(AllowPrivateAccess = "true"))
 	UNiagaraSystem* m_pMuzzleFlash;
-	
-	/** AnimMontage to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	UAnimMontage* FireAnimation;
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
@@ -67,5 +59,5 @@ protected:
 
 private:
 	/** The Character holding this weapon*/
-	Aproject_goldfishCharacter* Character;
+	Aproject_goldfishCharacter* character;
 };

@@ -13,84 +13,85 @@
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
 {
-	// Default offset from the character location for projectiles to spawn
-	m_vMuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
+
 }
 
 
 void UTP_WeaponComponent::Fire()
 {
-	if (Character == nullptr || Character->GetController() == nullptr)
+	if (character == nullptr || character->GetController() == nullptr)
 	{
 		return;
 	}
 
-	// Try and fire a projectile
-	if (ProjectileClass != nullptr)
+	// Try and line trace.
+	UWorld* const world = GetWorld();
+	if (world != nullptr)
 	{
-		UWorld* const World = GetWorld();
-		if (World != nullptr)
-		{
-			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
-			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
-			// m_vMuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-			const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(m_vMuzzleOffset);
-	
-			//Set Spawn Collision Handling Override
-			FActorSpawnParameters ActorSpawnParams;
-			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-	
-			// Spawn the projectile at the muzzle
-			World->SpawnActor<Aproject_goldfishProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-		}
+		APlayerController* playerController = Cast<APlayerController>(character->GetController());
+		const FRotator spawnRotation = playerController->PlayerCameraManager->GetCameraRotation();
+		// m_vMuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+		const FVector spawnLocation = character->GetActorLocation() + spawnRotation.RotateVector(m_vMuzzleOffset);
+
+		// Set up Query params.
+		FCollisionQueryParams queryParams;
+		queryParams.AddIgnoredActor(playerController->GetPawn());
+		queryParams.AddIgnoredActor(GetOwner());
+
+		// Setup the hit result.
+		FHitResult outHit;
+
+		// Perform the line trace.
+		world->LineTraceSingleByChannel(outHit, spawnLocation, spawnLocation + (spawnRotation.Vector() * 3000), ECollisionChannel::ECC_Pawn, queryParams);
+		DrawDebugLine(world, spawnLocation, spawnLocation + (spawnRotation.Vector() * 3000), FColor::Red, false, 1.0f, 5, 10.0f);
 	}
 	
-	// Try and play the sound if specified
+	// Try and play the SFX.
 	if (m_pFireSound != nullptr)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, m_pFireSound, Character->GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(this, m_pFireSound, character->GetActorLocation());
 	}
-	
-	// Try and play a firing animation if specified
-	if (FireAnimation != nullptr)
+
+	// Try and spawn the muzzle flash PFX.
+	if (m_pMuzzleFlash != nullptr)
 	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
-		if (AnimInstance != nullptr)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
+		APlayerController* playerController = Cast<APlayerController>(character->GetController());
+		const FRotator spawnRotation = playerController->PlayerCameraManager->GetCameraRotation();
+		// m_vMuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+		const FVector spawnLocation = GetOwner()->GetActorLocation() + spawnRotation.RotateVector(m_vMuzzleOffset);
+
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(world, m_pMuzzleFlash, spawnLocation, spawnRotation);
 	}
 }
 
 void UTP_WeaponComponent::AttachWeapon(Aproject_goldfishCharacter* TargetCharacter)
 {
-	Character = TargetCharacter;
+	character = TargetCharacter;
 
 	// Check that the character is valid, and has no rifle yet
-	if (Character == nullptr || Character->GetHasRifle())
+	if (character == nullptr || character->GetHasRifle())
 	{
 		return;
 	}
 
 	// Attach the weapon to the First Person Character
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-	USkeletalMeshComponent* pCharacterMesh = Character->GetMesh1P();
+	USkeletalMeshComponent* pCharacterMesh = character->GetMesh1P();
 	AttachToComponent(pCharacterMesh, AttachmentRules, FName(TEXT("WeaponSocket")));
 	
 	// switch bHasRifle so the animation blueprint can switch to another animation set
-	Character->SetHasRifle(true);
+	character->SetHasRifle(true);
 
 	// Set up action bindings
-	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
+	if (APlayerController* playerController = Cast<APlayerController>(character->GetController()))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
 		{
 			// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
 			Subsystem->AddMappingContext(FireMappingContext, 1);
 		}
 
-		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
+		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(playerController->InputComponent))
 		{
 			// Fire
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
@@ -100,14 +101,14 @@ void UTP_WeaponComponent::AttachWeapon(Aproject_goldfishCharacter* TargetCharact
 
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if (Character == nullptr)
+	if (character == nullptr)
 	{
 		return;
 	}
 
-	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
+	if (APlayerController* playerController = Cast<APlayerController>(character->GetController()))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
 		{
 			Subsystem->RemoveMappingContext(FireMappingContext);
 		}

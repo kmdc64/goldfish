@@ -10,7 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
-#include "TP_WeaponComponent.h"
+#include "Weapon.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -138,6 +138,11 @@ void Aproject_goldfishCharacter::Shoot()
 			pAnimInstance->Montage_Play(m_pShootMontage, 1.0f);
 		}
 	}
+
+	if (m_pCurrentlyEquippedWeapon != nullptr)
+	{
+		m_pCurrentlyEquippedWeapon->Fire();
+	}
 }
 
 void Aproject_goldfishCharacter::Reload()
@@ -162,8 +167,7 @@ void Aproject_goldfishCharacter::EquipWeapon()
 	FActorSpawnParameters pSpawnParams;
 	pSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	AActor* pSpawnedWeapon = GetWorld()->SpawnActor<AActor>(m_cWeapon, pLocation, pRotation, pSpawnParams);
-
-	UTP_WeaponComponent* pWeapon = Cast<UTP_WeaponComponent>(pSpawnedWeapon->GetComponentByClass(UTP_WeaponComponent::StaticClass()));
-	pWeapon->AttachWeapon(this);
+	AWeapon* pSpawnedWeapon = GetWorld()->SpawnActor<AWeapon>(m_cWeapon, pLocation, pRotation, pSpawnParams);
+	m_pCurrentlyEquippedWeapon = Cast<UTP_WeaponComponent>(pSpawnedWeapon->GetComponentByClass(UTP_WeaponComponent::StaticClass()));
+	m_pCurrentlyEquippedWeapon->AttachWeapon(this);
 }

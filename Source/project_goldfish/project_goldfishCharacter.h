@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "TP_WeaponComponent.h"
 #include "project_goldfishCharacter.generated.h"
 
 class UInputComponent;
@@ -64,6 +65,8 @@ public:
 
 protected:
 	virtual void BeginPlay();
+
+	UTP_WeaponComponent* m_pCurrentlyEquippedWeapon;
 
 public:
 		
