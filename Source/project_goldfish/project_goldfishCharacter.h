@@ -45,6 +45,10 @@ class Aproject_goldfishCharacter : public ACharacter
 	// Reference to weapon
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta=(AllowPrivateAccess = "true"))
 	TSubclassOf<class AActor> m_cWeapon;
+
+	// Reference to the HUD
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD", meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<class UUserWidget> m_cPlayerHud;
 	
 public:
 	Aproject_goldfishCharacter();

@@ -11,6 +11,7 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 #include "Weapon.h"
+#include "Blueprint/UserWidget.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -55,7 +56,15 @@ void Aproject_goldfishCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
 	EquipWeapon();
+
+	if (m_cPlayerHud != nullptr)
+	{
+		// Add the HUD to our viewport.
+		UUserWidget* Hud = CreateWidget<UUserWidget>(Cast<APlayerController>(GetController()), m_cPlayerHud);
+		Hud->AddToViewport(9999);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
