@@ -57,6 +57,10 @@ void Aproject_goldfishCharacter::BeginPlay()
 		}
 	}
 
+	// Bind events
+	GetMesh1P()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &Aproject_goldfishCharacter::HandleOnMontageEnd);
+
+	// Equip the default weapon
 	EquipWeapon();
 
 	if (m_cPlayerHud != nullptr)
@@ -156,6 +160,10 @@ void Aproject_goldfishCharacter::Shoot()
 
 void Aproject_goldfishCharacter::Reload()
 {
+	// Check if we can reload.
+	if ((m_currentAmmo >= m_currentWeapon->m_iClipSize) || (m_totalAmmo <= 0))
+		return;
+
 	UAnimInstance* pAnimInstance = GetMesh1P()->GetAnimInstance();
 	if (pAnimInstance != nullptr)
 	{
@@ -176,7 +184,29 @@ void Aproject_goldfishCharacter::EquipWeapon()
 	FActorSpawnParameters pSpawnParams;
 	pSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	AWeapon* pSpawnedWeapon = GetWorld()->SpawnActor<AWeapon>(m_cWeapon, pLocation, pRotation, pSpawnParams);
-	m_pCurrentlyEquippedWeapon = Cast<UTP_WeaponComponent>(pSpawnedWeapon->GetComponentByClass(UTP_WeaponComponent::StaticClass()));
+	// Spawn weapon
+	m_currentWeapon = GetWorld()->SpawnActor<AWeapon>(m_cWeapon, pLocation, pRotation, pSpawnParams);
+	// Set ammo
+	m_currentAmmo = m_currentWeapon->m_iClipSize;
+	m_totalAmmo = m_currentWeapon->m_iMaxAmmo;
+	// Set weapon
+	m_pCurrentlyEquippedWeapon = Cast<UTP_WeaponComponent>(m_currentWeapon->GetComponentByClass(UTP_WeaponComponent::StaticClass()));
 	m_pCurrentlyEquippedWeapon->AttachWeapon(this);
+}
+
+void Aproject_goldfishCharacter::HandleOnMontageEnd(UAnimMontage* a_pMontage, bool a_bInterrupted)
+{
+	// Get reload montage logic...
+	if (a_pMontage->GetName().Contains("reload") && !a_bInterrupted)
+	{
+		// Check a weapon is equipped.
+		if (m_currentWeapon == nullptr)
+			return;
+
+		// Fill the clip with available ammo.
+		int reloadAmount = m_currentWeapon->m_iClipSize - m_currentAmmo;
+		reloadAmount = UKismetMathLibrary::Min(reloadAmount, m_totalAmmo);
+		m_totalAmmo -= reloadAmount;
+		m_currentAmmo += reloadAmount;
+	}
 }

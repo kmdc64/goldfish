@@ -24,6 +24,10 @@ void UTP_WeaponComponent::Fire()
 		return;
 	}
 
+	// Check clip is not empty.
+	if (character->m_currentAmmo <= 0)
+		return;
+
 	// Try and line trace.
 	UWorld* const world = GetWorld();
 	if (world != nullptr)
@@ -44,6 +48,9 @@ void UTP_WeaponComponent::Fire()
 		// Perform the line trace.
 		world->LineTraceSingleByChannel(outHit, spawnLocation, spawnLocation + (spawnRotation.Vector() * 3000), ECollisionChannel::ECC_Pawn, queryParams);
 		DrawDebugLine(world, spawnLocation, spawnLocation + (spawnRotation.Vector() * 3000), FColor::Red, false, 1.0f, 5, 10.0f);
+
+		// Expend ammo.
+		character->m_currentAmmo = character->m_currentAmmo - 1;
 	}
 	
 	// Try and play the SFX.

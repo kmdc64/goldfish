@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "TP_WeaponComponent.h"
+#include "Weapon.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "project_goldfishCharacter.generated.h"
 
 class UInputComponent;
@@ -67,6 +69,19 @@ public:
 
 	void EquipWeapon();
 
+	// Reference to the equipped weapon
+	AWeapon* m_currentWeapon = 0;
+
+	// Public fields
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float m_health = 100.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int m_currentAmmo = 0;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int m_totalAmmo = 0;
+
 protected:
 	virtual void BeginPlay();
 
@@ -111,6 +126,9 @@ protected:
 	// End of APawn interface
 
 public:
+	UFUNCTION()
+	void HandleOnMontageEnd(UAnimMontage* a_pMontage, bool a_bInterrupted);
+
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
