@@ -13,7 +13,9 @@
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
 {
-
+	// Initialise the ammo.
+	m_iCurrentAmmo = m_iClipSize;
+	m_iTotalAmmo = m_iMaxAmmo;
 }
 
 
@@ -25,7 +27,7 @@ void UTP_WeaponComponent::Fire()
 	}
 
 	// Check clip is not empty.
-	if (character->m_currentAmmo <= 0)
+	if (m_iCurrentAmmo <= 0)
 		return;
 
 	// Try and line trace.
@@ -50,7 +52,7 @@ void UTP_WeaponComponent::Fire()
 		DrawDebugLine(world, spawnLocation, spawnLocation + (spawnRotation.Vector() * 3000), FColor::Red, false, 1.0f, 5, 10.0f);
 
 		// Expend ammo.
-		character->m_currentAmmo = character->m_currentAmmo - 1;
+		m_iCurrentAmmo = m_iCurrentAmmo - 1;
 	}
 	
 	// Try and play the SFX.
@@ -69,6 +71,25 @@ void UTP_WeaponComponent::Fire()
 
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(world, m_pMuzzleFlash, spawnLocation, spawnRotation);
 	}
+}
+
+void UTP_WeaponComponent::Reload()
+{
+	// Fill the clip with available ammo.
+	int reloadAmount = m_iClipSize - m_iCurrentAmmo;
+	reloadAmount = UKismetMathLibrary::Min(reloadAmount, m_iTotalAmmo);
+	m_iTotalAmmo -= reloadAmount;
+	m_iCurrentAmmo += reloadAmount;
+}
+
+bool UTP_WeaponComponent::CanReload()
+{
+	bool clipFull = m_iCurrentAmmo == m_iClipSize;
+	bool ammoAvailable = m_iTotalAmmo > 0;
+	if (clipFull || !ammoAvailable)
+		return false;
+
+	return true;
 }
 
 void UTP_WeaponComponent::AttachWeapon(Aproject_goldfishCharacter* TargetCharacter)

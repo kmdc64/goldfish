@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "TP_WeaponComponent.generated.h"
 
 class Aproject_goldfishCharacter;
@@ -52,6 +53,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+	/** Fill the weapon with ammo from the available pool */
+	UFUNCTION(BlueprintCallable, Category="Weapon")
+	void Reload();
+
+	/** Return true if there is available ammo to reload */
+	UFUNCTION(BlueprintCallable, Category="Weapon")
+	virtual bool CanReload();
+
+	// Ammo values
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	int m_iClipSize = 8;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	int m_iMaxAmmo = 80;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int m_iCurrentAmmo = 0;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int m_iTotalAmmo = 0;
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()

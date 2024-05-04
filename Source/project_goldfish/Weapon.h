@@ -41,13 +41,6 @@ public:
 	// Weapon component
 	UTP_WeaponComponent* m_pWeaponComponent;
 
-	// Ammo values
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
-	int m_iClipSize = 8;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
-	int m_iMaxAmmo = 80;
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

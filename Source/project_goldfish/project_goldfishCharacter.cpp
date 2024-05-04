@@ -160,8 +160,8 @@ void Aproject_goldfishCharacter::Shoot()
 
 void Aproject_goldfishCharacter::Reload()
 {
-	// Check if we can reload.
-	if ((m_currentAmmo >= m_currentWeapon->m_iClipSize) || (m_totalAmmo <= 0))
+	// Check if the weapon is reloadable.
+	if (!m_pCurrentlyEquippedWeapon->CanReload())
 		return;
 
 	UAnimInstance* pAnimInstance = GetMesh1P()->GetAnimInstance();
@@ -186,9 +186,6 @@ void Aproject_goldfishCharacter::EquipWeapon()
 
 	// Spawn weapon
 	m_currentWeapon = GetWorld()->SpawnActor<AWeapon>(m_cWeapon, pLocation, pRotation, pSpawnParams);
-	// Set ammo
-	m_currentAmmo = m_currentWeapon->m_iClipSize;
-	m_totalAmmo = m_currentWeapon->m_iMaxAmmo;
 	// Set weapon
 	m_pCurrentlyEquippedWeapon = Cast<UTP_WeaponComponent>(m_currentWeapon->GetComponentByClass(UTP_WeaponComponent::StaticClass()));
 	m_pCurrentlyEquippedWeapon->AttachWeapon(this);
@@ -200,13 +197,9 @@ void Aproject_goldfishCharacter::HandleOnMontageEnd(UAnimMontage* a_pMontage, bo
 	if (a_pMontage->GetName().Contains("reload") && !a_bInterrupted)
 	{
 		// Check a weapon is equipped.
-		if (m_currentWeapon == nullptr)
+		if (m_pCurrentlyEquippedWeapon == nullptr)
 			return;
 
-		// Fill the clip with available ammo.
-		int reloadAmount = m_currentWeapon->m_iClipSize - m_currentAmmo;
-		reloadAmount = UKismetMathLibrary::Min(reloadAmount, m_totalAmmo);
-		m_totalAmmo -= reloadAmount;
-		m_currentAmmo += reloadAmount;
+		m_pCurrentlyEquippedWeapon->Reload();
 	}
 }
