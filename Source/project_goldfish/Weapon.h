@@ -17,35 +17,18 @@ class PROJECT_GOLDFISH_API AWeapon : public AActor
 	UStaticMeshComponent* m_pMesh;
 	
 public:
-	// Weapon sounds
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-	USoundBase* m_pFireSound;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-	USoundBase* m_pEmptySound;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-	TArray<USoundBase*> m_pImpactSounds;
-
-	// Muzzle offset
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
-	FVector m_vMuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
-
-	// Muzzle flash
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX")
-	UNiagaraSystem* m_pMuzzleFlash;
-
-	// Sets default values for this actor's properties
-	AWeapon();
-
-	// Weapon component
+	// The currently equipped weapon component.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"))
 	UTP_WeaponComponent* m_pWeaponComponent;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
+	// Sets default values for this actor's properties
+	AWeapon();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

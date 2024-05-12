@@ -72,15 +72,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	AWeapon* m_currentWeapon = 0;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UTP_WeaponComponent* m_pCurrentlyEquippedWeapon;
+
 	// Public fields
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	float m_health = 100.0f;
+	float m_fHealth = 100.0f;
 
 protected:
 	virtual void BeginPlay();
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UTP_WeaponComponent* m_pCurrentlyEquippedWeapon;
 
 public:
 		

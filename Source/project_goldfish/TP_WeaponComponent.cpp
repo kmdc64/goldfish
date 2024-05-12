@@ -36,8 +36,8 @@ void UTP_WeaponComponent::Fire()
 	{
 		APlayerController* playerController = Cast<APlayerController>(character->GetController());
 		const FRotator spawnRotation = playerController->PlayerCameraManager->GetCameraRotation();
-		// m_vMuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		const FVector spawnLocation = character->GetActorLocation() + spawnRotation.RotateVector(m_vMuzzleOffset);
+		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+		const FVector spawnLocation = character->GetActorLocation() + spawnRotation.RotateVector(MuzzleOffset);
 
 		// Set up Query params.
 		FCollisionQueryParams queryParams;
@@ -56,20 +56,20 @@ void UTP_WeaponComponent::Fire()
 	}
 	
 	// Try and play the SFX.
-	if (m_pFireSound != nullptr)
+	if (FireSound != nullptr)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, m_pFireSound, character->GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, character->GetActorLocation());
 	}
 
 	// Try and spawn the muzzle flash PFX.
-	if (m_pMuzzleFlash != nullptr)
+	if (MuzzleFlashPfx != nullptr)
 	{
 		APlayerController* playerController = Cast<APlayerController>(character->GetController());
 		const FRotator spawnRotation = playerController->PlayerCameraManager->GetCameraRotation();
-		// m_vMuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		const FVector spawnLocation = GetOwner()->GetActorLocation() + spawnRotation.RotateVector(m_vMuzzleOffset);
+		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+		const FVector spawnLocation = GetOwner()->GetActorLocation() + spawnRotation.RotateVector(MuzzleOffset);
 
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(world, m_pMuzzleFlash, spawnLocation, spawnRotation);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(world, MuzzleFlashPfx, spawnLocation, spawnRotation);
 	}
 }
 

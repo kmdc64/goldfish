@@ -16,23 +16,29 @@ class PROJECT_GOLDFISH_API UTP_WeaponComponent : public USkeletalMeshComponent
 	GENERATED_BODY()
 
 public:
-	// Weapon sounds
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta=(AllowPrivateAccess = "true"))
-	USoundBase* m_pFireSound;
+	// Name of the weapon.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information", meta=(AllowPrivateAccess = "true"))
+	FString DisplayName;
 
+	// SFX that plays upon firing.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta=(AllowPrivateAccess = "true"))
-	USoundBase* m_pEmptySound;
+	USoundBase* FireSound;
 
+	// SFX that plays upon attempting to fire with an empty clip.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta=(AllowPrivateAccess = "true"))
-	TArray<USoundBase*> m_pImpactSounds;
+	USoundBase* EmptyClipSound;
 
-	// Muzzle offset
+	// A collection of various impact SFX.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta=(AllowPrivateAccess = "true"))
+	TArray<USoundBase*> ImpactSounds;
+
+	// The muzzle flash offset.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta=(AllowPrivateAccess = "true"))
-	FVector m_vMuzzleOffset;
+	FVector MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);;
 
-	// Muzzle flash
+	// The muzzle flash particle system.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX", meta=(AllowPrivateAccess = "true"))
-	UNiagaraSystem* m_pMuzzleFlash;
+	UNiagaraSystem* MuzzleFlashPfx;
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))

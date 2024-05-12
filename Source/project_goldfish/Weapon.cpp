@@ -18,13 +18,7 @@ AWeapon::AWeapon()
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	// Assign weapon component variables
-	m_pWeaponComponent->m_pFireSound = m_pFireSound;
-	m_pWeaponComponent->m_pEmptySound = m_pEmptySound;
-	m_pWeaponComponent->m_pImpactSounds = m_pImpactSounds;
-	m_pWeaponComponent->m_vMuzzleOffset = m_vMuzzleOffset;
-	m_pWeaponComponent->m_pMuzzleFlash = m_pMuzzleFlash;
+
 }
 
 // Called every frame
