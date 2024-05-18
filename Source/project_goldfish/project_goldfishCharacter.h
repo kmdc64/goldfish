@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "TP_WeaponComponent.h"
 #include "Weapon.h"
+#include "HealthInterface.h"
 #include "project_goldfishCharacter.generated.h"
 
 class UInputComponent;
@@ -19,7 +20,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class Aproject_goldfishCharacter : public ACharacter
+class Aproject_goldfishCharacter : public ACharacter, public IHealthInterface
 {
 	GENERATED_BODY()
 
@@ -78,6 +79,10 @@ public:
 	// Public fields
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float m_fHealth = 100.0f;
+
+	// IHealthInterface methods.
+	virtual void ReceiveDamage(int amount) override;
+	virtual void RecoverHealth(int amount) override;
 
 protected:
 	virtual void BeginPlay();

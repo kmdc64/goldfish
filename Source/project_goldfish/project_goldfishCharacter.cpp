@@ -203,3 +203,13 @@ void Aproject_goldfishCharacter::HandleOnMontageEnd(UAnimMontage* a_pMontage, bo
 		m_pCurrentlyEquippedWeapon->Reload();
 	}
 }
+
+void Aproject_goldfishCharacter::ReceiveDamage(int amount)
+{
+	m_fHealth -= amount;
+}
+
+void Aproject_goldfishCharacter::RecoverHealth(int amount)
+{
+	m_fHealth += amount;
+}
