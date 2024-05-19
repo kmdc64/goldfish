@@ -12,6 +12,7 @@
 #include "Engine/LocalPlayer.h"
 #include "Weapon.h"
 #include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -207,6 +208,13 @@ void Aproject_goldfishCharacter::HandleOnMontageEnd(UAnimMontage* a_pMontage, bo
 void Aproject_goldfishCharacter::ReceiveDamage(int amount)
 {
 	m_fHealth -= amount;
+
+	if (m_fHealth <= 0)
+	{
+		UWorld* world = GetWorld();
+		FName levelName = FName(world->GetName());
+		UGameplayStatics::OpenLevel(world, levelName, true);
+	}
 }
 
 void Aproject_goldfishCharacter::RecoverHealth(int amount)
