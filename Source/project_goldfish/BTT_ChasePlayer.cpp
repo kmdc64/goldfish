@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "BTT_ChasePlayer.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Runtime/NavigationSystem/Public/NavigationSystem.h"
 #include "Enemy_Controller.h"
 #include "EnemyKeys.h"
 #include "Kismet/GameplayStatics.h"
-#include "BTT_ChasePlayer.h"
 
 UBTT_ChasePlayer::UBTT_ChasePlayer(FObjectInitializer const& a_pObjectInit)
 {

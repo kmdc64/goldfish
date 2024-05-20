@@ -1,6 +1,6 @@
 [
 	{
-		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\Private\\Enemy.cpp",
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\BTT_ChasePlayer.cpp",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_project_goldfish\\project_goldfish.1.rsp"
@@ -8,7 +8,7 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
 	},
 	{
-		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\Private\\Enemy_Controller.cpp",
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\BTT_ChasePlayer.h",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_project_goldfish\\project_goldfish.1.rsp"
@@ -16,7 +16,7 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
 	},
 	{
-		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\Public\\Enemy.h",
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\BTT_FindPlayerLocation.cpp",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_project_goldfish\\project_goldfish.1.rsp"
@@ -24,7 +24,63 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
 	},
 	{
-		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\Public\\Enemy_Controller.h",
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\BTT_FindPlayerLocation.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_project_goldfish\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\Enemy.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_project_goldfish\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\Enemy.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_project_goldfish\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\EnemyKeys.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_project_goldfish\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\Enemy_Controller.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_project_goldfish\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\Enemy_Controller.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_project_goldfish\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\Private\\HealthInterface.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_project_goldfish\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\Public\\HealthInterface.h",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_project_goldfish\\project_goldfish.1.rsp"

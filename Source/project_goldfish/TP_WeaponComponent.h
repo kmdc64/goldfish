@@ -28,6 +28,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta=(AllowPrivateAccess = "true"))
 	USoundBase* EmptyClipSound;
 
+	// SFX that plays upon attempting to fire into the environment.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta=(AllowPrivateAccess = "true"))
+	TArray<USoundBase*> EnvironmentalSounds;
+
 	// A collection of various impact SFX.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta=(AllowPrivateAccess = "true"))
 	TArray<USoundBase*> ImpactSounds;
@@ -79,10 +83,19 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int m_iTotalAmmo = 0;
+
+	float GetShotDamage();
+
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Damage")
+	float m_fDamagePerShotMin;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Damage")
+	float m_fDamagePerShotMax;
 
 private:
 	/** The Character holding this weapon*/

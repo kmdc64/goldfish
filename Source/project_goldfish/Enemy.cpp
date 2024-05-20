@@ -2,6 +2,9 @@
 
 
 #include "Enemy.h"
+#include "Kismet/GameplayStatics.h"
+#include "project_goldfishCharacter.h"
+
 
 // Sets default values
 AEnemy::AEnemy()
@@ -16,6 +19,8 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Bind events.
+	GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &AEnemy::HandleOnMontageEnded);
 }
 
 // Called every frame
@@ -32,3 +37,89 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void AEnemy::ReceiveDamage(int amount)
+{
+	if (m_fHealth <= 0)
+		return; // Already dead or dying.
+
+	m_fHealth -= amount;
+
+	// Play reaction to damage sfx.
+	UWorld* world = GetWorld();
+	UGameplayStatics::PlaySoundAtLocation(world, m_pDamagedSound, GetActorLocation());
+
+	if (m_fHealth <= 0)
+	{
+		Die();
+	}
+}
+
+void AEnemy::RecoverHealth(int amount)
+{
+	m_fHealth += amount;
+}
+
+UAnimMontage* AEnemy::GetAttackMontage()
+{
+    return m_pAttackMontage;
+}
+
+float AEnemy::GetAttackRange()
+{
+    return m_fAttackRange;
+}
+
+void AEnemy::Attack()
+{
+	UWorld* world = GetWorld();
+
+	// Play the attack animation.
+	UAnimInstance* pAnimInstance = GetMesh()->GetAnimInstance();
+	if (pAnimInstance != nullptr)
+	{
+		pAnimInstance->Montage_Play(m_pAttackMontage);
+	}
+
+	// Play an attack sfx.
+	USoundBase* attackSound = m_pAttackSounds[FMath::RandRange(0, m_pAttackSounds.Num() - 1)];
+	UGameplayStatics::PlaySoundAtLocation(world, attackSound, GetActorLocation());
+
+	// Deal damage to the player.
+	Aproject_goldfishCharacter* pPlayer = Cast<Aproject_goldfishCharacter>(UGameplayStatics::GetPlayerCharacter(world, 0));
+	pPlayer->ReceiveDamage(m_fAttackDamage);
+}
+
+void AEnemy::Die()
+{
+	// Play the death animation.
+	UAnimInstance* pAnimInstance = GetMesh()->GetAnimInstance();
+	if (pAnimInstance != nullptr)
+	{
+		if (!pAnimInstance->Montage_IsPlaying(m_pDeathMontage))
+		{
+			pAnimInstance->Montage_Play(m_pDeathMontage);
+		}
+	}
+
+	// Play a death sfx.
+	UWorld* world = GetWorld();
+	USoundBase* deathSound = m_pDeathSounds[FMath::RandRange(0, m_pDeathSounds.Num() - 1)];
+	UGameplayStatics::PlaySoundAtLocation(world, deathSound, GetActorLocation());
+
+
+}
+
+void AEnemy::Reset()
+{
+
+}
+
+
+void AEnemy::HandleOnMontageEnded(UAnimMontage* montage, bool wasInterrupted)
+{
+	if (montage->GetName().Contains("Death"))
+	{
+		Reset();
+		Destroy();
+	}
+}

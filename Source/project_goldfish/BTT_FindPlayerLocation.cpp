@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "BTT_FindPlayerLocation.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Runtime/NavigationSystem/Public/NavigationSystem.h"
 #include "Enemy_Controller.h"
 #include "EnemyKeys.h"
 #include "Kismet/GameplayStatics.h"
-#include "BTT_FindPlayerLocation.h"
 
 UBTT_FindPlayerLocation::UBTT_FindPlayerLocation(FObjectInitializer const& a_pObjectInit)
 {

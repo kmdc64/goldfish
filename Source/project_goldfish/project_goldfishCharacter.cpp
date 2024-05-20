@@ -12,6 +12,7 @@
 #include "Engine/LocalPlayer.h"
 #include "Weapon.h"
 #include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -20,7 +21,7 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 Aproject_goldfishCharacter::Aproject_goldfishCharacter()
 {
-	// Character doesnt have a rifle at start
+	// Character doesn't have a rifle at start
 	bHasRifle = false;
 	
 	// Set size for collision capsule
@@ -202,4 +203,21 @@ void Aproject_goldfishCharacter::HandleOnMontageEnd(UAnimMontage* a_pMontage, bo
 
 		m_pCurrentlyEquippedWeapon->Reload();
 	}
+}
+
+void Aproject_goldfishCharacter::ReceiveDamage(int amount)
+{
+	m_fHealth -= amount;
+
+	if (m_fHealth <= 0)
+	{
+		UWorld* world = GetWorld();
+		FName levelName = FName(world->GetName());
+		UGameplayStatics::OpenLevel(world, levelName, true);
+	}
+}
+
+void Aproject_goldfishCharacter::RecoverHealth(int amount)
+{
+	m_fHealth += amount;
 }
