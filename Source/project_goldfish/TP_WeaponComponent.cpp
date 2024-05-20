@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "HealthInterface.h"
 
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
@@ -26,18 +27,23 @@ void UTP_WeaponComponent::Fire()
 		return;
 	}
 
-	// Check clip is not empty.
-	if (m_iCurrentAmmo <= 0)
-		return;
-
-	// Try and line trace.
+	APlayerController* playerController = Cast<APlayerController>(character->GetController());
+	const FVector playerLocation = character->GetActorLocation();
+	const FRotator spawnRotation = playerController->PlayerCameraManager->GetCameraRotation();
+	
 	UWorld* const world = GetWorld();
 	if (world != nullptr)
 	{
-		APlayerController* playerController = Cast<APlayerController>(character->GetController());
-		const FRotator spawnRotation = playerController->PlayerCameraManager->GetCameraRotation();
+		// Check clip is not empty.
+		if (m_iCurrentAmmo <= 0)
+		{
+			UGameplayStatics::PlaySoundAtLocation(world, EmptyClipSound, playerLocation);
+			return;
+		}
+
+		
 		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		const FVector spawnLocation = character->GetActorLocation() + spawnRotation.RotateVector(MuzzleOffset);
+		const FVector spawnLocation = playerLocation + spawnRotation.RotateVector(MuzzleOffset);
 
 		// Set up Query params.
 		FCollisionQueryParams queryParams;
@@ -51,6 +57,20 @@ void UTP_WeaponComponent::Fire()
 		world->LineTraceSingleByChannel(outHit, spawnLocation, spawnLocation + (spawnRotation.Vector() * 3000), ECollisionChannel::ECC_Pawn, queryParams);
 		DrawDebugLine(world, spawnLocation, spawnLocation + (spawnRotation.Vector() * 3000), FColor::Red, false, 1.0f, 5, 10.0f);
 
+		// Try to hit a damageable object.
+		IHealthInterface* pHealth = Cast<IHealthInterface>(outHit.GetActor());
+		if (pHealth != nullptr)
+		{
+			float damageDealt = GetShotDamage();
+			pHealth->ReceiveDamage(damageDealt);
+		}
+		else
+		{
+			// Play environmental sounds.
+			auto sound = EnvironmentalSounds[FMath::RandRange(0, EnvironmentalSounds.Num() - 1)];
+			UGameplayStatics::PlaySoundAtLocation(world, sound, playerLocation);
+		}
+
 		// Expend ammo.
 		m_iCurrentAmmo = m_iCurrentAmmo - 1;
 	}
@@ -58,14 +78,12 @@ void UTP_WeaponComponent::Fire()
 	// Try and play the SFX.
 	if (FireSound != nullptr)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, character->GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, playerLocation);
 	}
 
 	// Try and spawn the muzzle flash PFX.
 	if (MuzzleFlashPfx != nullptr)
 	{
-		APlayerController* playerController = Cast<APlayerController>(character->GetController());
-		const FRotator spawnRotation = playerController->PlayerCameraManager->GetCameraRotation();
 		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
 		const FVector spawnLocation = GetOwner()->GetActorLocation() + spawnRotation.RotateVector(MuzzleOffset);
 
@@ -125,6 +143,11 @@ void UTP_WeaponComponent::AttachWeapon(Aproject_goldfishCharacter* TargetCharact
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
 		}
 	}
+}
+
+float UTP_WeaponComponent::GetShotDamage()
+{
+    return FMath::RandRange(m_fDamagePerShotMin, m_fDamagePerShotMax);
 }
 
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)

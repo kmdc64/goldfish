@@ -21,7 +21,7 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 Aproject_goldfishCharacter::Aproject_goldfishCharacter()
 {
-	// Character doesnt have a rifle at start
+	// Character doesn't have a rifle at start
 	bHasRifle = false;
 	
 	// Set size for collision capsule

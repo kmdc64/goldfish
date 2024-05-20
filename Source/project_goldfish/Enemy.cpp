@@ -19,6 +19,8 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Bind events.
+	GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &AEnemy::HandleOnMontageEnded);
 }
 
 // Called every frame
