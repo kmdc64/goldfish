@@ -40,7 +40,6 @@ void UTP_WeaponComponent::Fire()
 			UGameplayStatics::PlaySoundAtLocation(world, EmptyClipSound, playerLocation);
 			return;
 		}
-
 		
 		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
 		const FVector spawnLocation = playerLocation + spawnRotation.RotateVector(MuzzleOffset);
@@ -63,6 +62,10 @@ void UTP_WeaponComponent::Fire()
 		{
 			float damageDealt = GetShotDamage();
 			pHealth->ReceiveDamage(damageDealt);
+
+			// Reward points for killing an enemy.
+			Aproject_goldfishCharacter* pPlayerCharacter = Cast<Aproject_goldfishCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+			pPlayerCharacter->Stats->AddPoints(10);
 		}
 		else
 		{

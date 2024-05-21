@@ -20,6 +20,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Management")
 	TArray<FVector> m_pSpawnLocations;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Points")
+	int m_iPointsPerStandardKill = 150;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Waves")
 	int m_iInitialWaveSpawnCount = 5;
 

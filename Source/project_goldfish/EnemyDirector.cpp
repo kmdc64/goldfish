@@ -5,6 +5,7 @@
 #include "Enemy.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "project_goldfishCharacter.h"
 
 // Sets default values
 AEnemyDirector::AEnemyDirector()
@@ -161,6 +162,10 @@ void AEnemyDirector::ModifyWaveSpeeds()
 void AEnemyDirector::ConfirmEnemyKilled()
 {
 	m_iWaveKills++;
+	// Reward points for killing an enemy.
+	Aproject_goldfishCharacter* pPlayerCharacter = Cast<Aproject_goldfishCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	pPlayerCharacter->Stats->AddPoints(m_iPointsPerStandardKill);
+
 	if (m_iWaveKills >= m_iCurrentWaveSize)
 	{
 		EndWave();

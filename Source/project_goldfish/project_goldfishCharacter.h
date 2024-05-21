@@ -8,6 +8,7 @@
 #include "TP_WeaponComponent.h"
 #include "Weapon.h"
 #include "HealthInterface.h"
+#include "PlayerStats.h"
 #include "project_goldfishCharacter.generated.h"
 
 class UInputComponent;
@@ -55,6 +56,10 @@ class Aproject_goldfishCharacter : public ACharacter, public IHealthInterface
 public:
 	Aproject_goldfishCharacter();
 
+	// Stat tracker.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	APlayerStats* Stats;
+
 	// Reload montage
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* m_pReloadMontage;
@@ -86,6 +91,9 @@ public:
 
 protected:
 	virtual void BeginPlay();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
+	int m_iStartingPoints = 500;
 
 public:
 		
