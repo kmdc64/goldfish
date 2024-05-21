@@ -1,5 +1,21 @@
 [
 	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\BTT_Attack.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\BTT_Attack.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
 		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\BTT_ChasePlayer.cpp",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
@@ -48,6 +64,22 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
 	},
 	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\EnemyDirector.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\EnemyDirector.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
 		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\EnemyKeys.h",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
@@ -72,7 +104,7 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
 	},
 	{
-		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\Private\\HealthInterface.cpp",
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\HealthInterface.cpp",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
@@ -80,7 +112,23 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
 	},
 	{
-		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\Public\\HealthInterface.h",
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\HealthInterface.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\IsPlayerInRange.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\IsPlayerInRange.h",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"

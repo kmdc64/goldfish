@@ -16,6 +16,12 @@ public:
 	// Sets default values for this character's properties
 	AEnemy();
 
+	DECLARE_DYNAMIC_DELEGATE(FOnEnemyKilled);
+
+	FOnEnemyKilled OnEnemyKilled;
+
+	bool InArena = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -35,6 +41,7 @@ public:
 
 	UAnimMontage* GetAttackMontage();
 	float GetAttackRange();
+	float GetBaseSpeed();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
@@ -53,7 +60,7 @@ protected:
 	USoundBase* m_pDamagedSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float m_fHealth = 30.0f;
+	float m_fInitialHealth = 30.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float m_fAttackDamage = 33.4f;
@@ -61,12 +68,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float m_fAttackRange = 100.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float m_fBaseSpeed = 0.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float m_fHealth = 0.0f;
+
 private:
 	FVector m_vSpawnLocation;
-	bool m_bCanAttack;
 
 	void Die();
-	void Reset();
+	void ReturnToPool();
 
 	UFUNCTION()
 	void HandleOnMontageEnded(UAnimMontage* montage, bool wasInterrupted);
