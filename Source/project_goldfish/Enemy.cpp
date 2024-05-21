@@ -11,13 +11,15 @@ AEnemy::AEnemy()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	m_fHealth = m_fInitialHealth;
+	m_vSpawnLocation = GetActorLocation();
 	
 	// Bind events.
 	GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &AEnemy::HandleOnMontageEnded);
@@ -27,14 +29,12 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void AEnemy::ReceiveDamage(int amount)
@@ -67,6 +67,11 @@ UAnimMontage* AEnemy::GetAttackMontage()
 float AEnemy::GetAttackRange()
 {
     return m_fAttackRange;
+}
+
+float AEnemy::GetBaseSpeed()
+{
+	return m_fBaseSpeed;
 }
 
 void AEnemy::Attack()
@@ -105,13 +110,20 @@ void AEnemy::Die()
 	UWorld* world = GetWorld();
 	USoundBase* deathSound = m_pDeathSounds[FMath::RandRange(0, m_pDeathSounds.Num() - 1)];
 	UGameplayStatics::PlaySoundAtLocation(world, deathSound, GetActorLocation());
-
-
 }
 
-void AEnemy::Reset()
+void AEnemy::ReturnToPool()
 {
+	// Return enemy back to the pool.
+	TeleportTo(m_vSpawnLocation, GetActorRotation());
 
+	// Reset health and combat status.
+	m_fHealth = m_fInitialHealth;
+	InArena = false;
+
+	// Execute then reset delegates.
+	OnEnemyKilled.ExecuteIfBound();
+	OnEnemyKilled.Clear();
 }
 
 
@@ -119,7 +131,6 @@ void AEnemy::HandleOnMontageEnded(UAnimMontage* montage, bool wasInterrupted)
 {
 	if (montage->GetName().Contains("Death"))
 	{
-		Reset();
-		Destroy();
+		ReturnToPool();
 	}
 }
