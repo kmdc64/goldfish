@@ -13,6 +13,7 @@
 #include "Weapon.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "PlayerStats.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -42,6 +43,8 @@ Aproject_goldfishCharacter::Aproject_goldfishCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	// Create Player Stats component.
+	Stats = CreateDefaultSubobject<APlayerStats>(TEXT("PlayerStats"));
 }
 
 void Aproject_goldfishCharacter::BeginPlay()
@@ -64,11 +67,17 @@ void Aproject_goldfishCharacter::BeginPlay()
 	// Equip the default weapon
 	EquipWeapon();
 
+	// Add the HUD to our viewport.
 	if (m_cPlayerHud != nullptr)
 	{
-		// Add the HUD to our viewport.
 		UUserWidget* Hud = CreateWidget<UUserWidget>(Cast<APlayerController>(GetController()), m_cPlayerHud);
 		Hud->AddToViewport(9999);
+	}
+
+	// Set our starting stats.
+	if (Stats != nullptr)
+	{
+		Stats->AddPoints(m_iStartingPoints);
 	}
 }
 

@@ -136,6 +136,22 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
 	},
 	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\PlayerStats.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\PlayerStats.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
 		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\TP_PickUpComponent.cpp",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
