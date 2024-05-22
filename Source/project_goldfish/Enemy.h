@@ -71,6 +71,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float m_fBaseSpeed = 0.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float m_iPointsPerHitTaken = 10;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float m_iPointsFromDeath = 150;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float m_fHealth = 0.0f;
 

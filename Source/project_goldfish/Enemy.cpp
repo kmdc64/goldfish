@@ -48,6 +48,10 @@ void AEnemy::ReceiveDamage(int amount)
 	UWorld* world = GetWorld();
 	UGameplayStatics::PlaySoundAtLocation(world, m_pDamagedSound, GetActorLocation());
 
+	// Reward points for damaging an enemy.
+	Aproject_goldfishCharacter* pPlayerCharacter = Cast<Aproject_goldfishCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	pPlayerCharacter->Stats->AddPoints(m_iPointsPerHitTaken);
+
 	if (m_fHealth <= 0)
 	{
 		Die();
@@ -110,6 +114,10 @@ void AEnemy::Die()
 	UWorld* world = GetWorld();
 	USoundBase* deathSound = m_pDeathSounds[FMath::RandRange(0, m_pDeathSounds.Num() - 1)];
 	UGameplayStatics::PlaySoundAtLocation(world, deathSound, GetActorLocation());
+
+	// Reward points for killing an enemy.
+	Aproject_goldfishCharacter* pPlayerCharacter = Cast<Aproject_goldfishCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	pPlayerCharacter->Stats->AddPoints(m_iPointsFromDeath);
 }
 
 void AEnemy::ReturnToPool()

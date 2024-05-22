@@ -62,10 +62,6 @@ void UTP_WeaponComponent::Fire()
 		{
 			float damageDealt = GetShotDamage();
 			pHealth->ReceiveDamage(damageDealt);
-
-			// Reward points for killing an enemy.
-			Aproject_goldfishCharacter* pPlayerCharacter = Cast<Aproject_goldfishCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-			pPlayerCharacter->Stats->AddPoints(10);
 		}
 		else
 		{
