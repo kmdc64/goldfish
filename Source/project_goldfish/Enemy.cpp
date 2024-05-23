@@ -122,16 +122,16 @@ void AEnemy::Die()
 
 void AEnemy::ReturnToPool()
 {
+	// Execute then reset delegates.
+	OnEnemyKilled.ExecuteIfBound();
+	OnEnemyKilled.Clear();
+
 	// Return enemy back to the pool.
 	TeleportTo(m_vSpawnLocation, GetActorRotation());
 
 	// Reset health and combat status.
 	m_fHealth = m_fInitialHealth;
 	InArena = false;
-
-	// Execute then reset delegates.
-	OnEnemyKilled.ExecuteIfBound();
-	OnEnemyKilled.Clear();
 }
 
 

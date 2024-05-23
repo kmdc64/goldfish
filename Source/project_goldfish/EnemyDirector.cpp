@@ -18,36 +18,39 @@ AEnemyDirector::AEnemyDirector()
 void AEnemyDirector::AttemptSpawnEnemies()
 {
 	TArray<AActor*> pooledEnemies = GetAllEnemiesInPool();
+	TArray<AActor*> arenaEnemies = GetAllEnemiesInArena();
 	int pooledEnemiesCount = pooledEnemies.Num();
-	if (pooledEnemiesCount > 0)
+	int arenaEnemiesCount = arenaEnemies.Num();
+	if (pooledEnemiesCount == 0)
+		return; // No enemies available to take from the pool.
+
+	int leftToKill = m_iCurrentWaveSize - m_iWaveKills;
+	int leftToSpawn = leftToKill - arenaEnemiesCount;
+	if (leftToSpawn <= 0)
+		return;
+	
+	// Limit the amount of enemies we can spawn at once to our chosen limit, or the pool size.
+	int arenaCapacityLeft = m_iMaxEnemiesInArena - arenaEnemiesCount;
+	if (arenaCapacityLeft <= 0)
+		return;
+
+	int amountSpawnable = UKismetMathLibrary::Min(arenaCapacityLeft, leftToSpawn);
+	amountSpawnable = UKismetMathLibrary::Min(pooledEnemiesCount, amountSpawnable);
+	for (int i = 0; i < amountSpawnable; ++i)
 	{
-		int enemiesInArenaCount = GetAllEnemiesInArena().Num();
-		int leftToSpawn = (m_iCurrentWaveSize - m_iWaveKills) - enemiesInArenaCount;
-		if (leftToSpawn <= 0)
-			return;
-		
-		// Limit the amount of enemies we can spawn at once to our chosen limit, or the pool size.
-		int arenaCapacityLeft = m_iMaxEnemiesInArena - enemiesInArenaCount;
-		if (arenaCapacityLeft <= 0)
-			return;
+		AEnemy* pEnemy = Cast<AEnemy>(pooledEnemies[i]);
 
-		int amountSpawnable = UKismetMathLibrary::Min(arenaCapacityLeft, leftToSpawn);
-		amountSpawnable = UKismetMathLibrary::Min(pooledEnemiesCount, amountSpawnable);
-		for (int i = 0; i < amountSpawnable; ++i)
-		{
-			AEnemy* pEnemy = Cast<AEnemy>(pooledEnemies[i]);
+		// Bind delegates.
+		pEnemy->OnEnemyKilled.Clear();
+		pEnemy->OnEnemyKilled.BindUFunction(this, "ConfirmEnemyKilled");
 
-			// Bind delegates.
-			pEnemy->OnEnemyKilled.BindUFunction(this, "ConfirmEnemyKilled");
-
-			// Disable collisions temporarily in case enemies spawn on top of one another.
-			pEnemy->SetActorEnableCollision(false);
-			auto spawnLocation = m_pSpawnLocations[FMath::RandRange(0, m_pSpawnLocations.Num() - 1)];
-			auto enemyRotation = pEnemy->GetActorRotation();
-			pEnemy->TeleportTo(spawnLocation, enemyRotation);
-			pEnemy->InArena = true;
-			pEnemy->SetActorEnableCollision(true);
-		}
+		// Disable collisions temporarily in case enemies spawn on top of one another.
+		pEnemy->SetActorEnableCollision(false);
+		auto spawnLocation = m_pSpawnLocations[FMath::RandRange(0, m_pSpawnLocations.Num() - 1)];
+		auto enemyRotation = pEnemy->GetActorRotation();
+		pEnemy->TeleportTo(spawnLocation, enemyRotation);
+		pEnemy->InArena = true;
+		pEnemy->SetActorEnableCollision(true);
 	}
 }
 
@@ -91,14 +94,15 @@ void AEnemyDirector::NextWave()
 	UWorld* world = GetWorld();
 	world->GetTimerManager().SetTimer(pTimerHandle, [&]()
 	{
-		AttemptSpawnEnemies();
 		ModifyWaveSpeeds();
+		m_bWaveIntermission = false;
 	}, m_fSecondsBeforeWaveStarts, false);
 }
 
 void AEnemyDirector::EndWave()
 {
 	// Delay next wave.
+	m_bWaveIntermission = true;
 	FTimerHandle pTimerHandle;
 	UWorld* world = GetWorld();
 	world->GetTimerManager().SetTimer(pTimerHandle, [&]()
@@ -167,10 +171,6 @@ void AEnemyDirector::ConfirmEnemyKilled()
 	{
 		EndWave();
 	}
-	else
-	{
-		AttemptSpawnEnemies();
-	}
 }
 
 // Called when the game starts or when spawned
@@ -189,6 +189,9 @@ void AEnemyDirector::BeginPlay()
 void AEnemyDirector::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (!m_bWaveIntermission)
+	{
+		AttemptSpawnEnemies();
+	}
 }
 
