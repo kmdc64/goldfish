@@ -7,7 +7,8 @@
 #include "BTT_ChasePlayer.generated.h"
 
 /**
- * 
+ * UBTT_ChasePlayer:
+ * Chasing player behavior.
  */
 UCLASS()
 class PROJECT_GOLDFISH_API UBTT_ChasePlayer : public UBTTask_BlackboardBase
@@ -16,5 +17,5 @@ class PROJECT_GOLDFISH_API UBTT_ChasePlayer : public UBTTask_BlackboardBase
 	
 public:
 	UBTT_ChasePlayer(FObjectInitializer const& a_pObjectInit);
-	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& a_pTreeComp, uint8* a_pNodeMem);
+	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& pTreeComp, uint8* pNodeMem);
 };

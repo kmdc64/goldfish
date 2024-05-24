@@ -7,7 +7,8 @@
 #include "PlayerStats.generated.h"
 
 /**
- * 
+ * APlayerStats:
+ * Manages a player's in-game stats.
  */
 UCLASS()
 class PROJECT_GOLDFISH_API APlayerStats : public AActor
@@ -22,9 +23,11 @@ public:
 	// Returns the total points.
 	UFUNCTION(BlueprintCallable, Category="Points")
 	int GetPoints();
+
 	// Adds an amount to the points and returns the new total.
 	UFUNCTION(BlueprintCallable, Category="Points")
 	int AddPoints(int amount);
+
 	// Removes an amount of points and returns the new total.
 	UFUNCTION(BlueprintCallable, Category="Points")
 	int RemovePoints(int amount);

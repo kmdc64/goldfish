@@ -25,8 +25,10 @@ void UIsPlayerInRange::OnBecomeRelevant(UBehaviorTreeComponent& behaviorTreeComp
 
     // Get Player Controller & Pawn.
     APlayerController* pPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+    AActor* pPlayerPawn = pPlayerController->GetPawn();
 
     // Set blackboard key to player in range.
-    bool withinRange = pEnemyPawn->GetDistanceTo(pPlayerController->GetPawn()) <= pEnemy->GetAttackRange();
-    pAiController->GetBlackboard()->SetValueAsBool(EnemyKeys::isPlayerInRange, withinRange);
+    float fDistanceBetweenPawns = pEnemyPawn->GetDistanceTo(pPlayerPawn);
+    bool bWithinRange = fDistanceBetweenPawns <= pEnemy->GetAttackRange();
+    pAiController->GetBlackboard()->SetValueAsBool(EnemyKeys::IsPlayerInRange, bWithinRange);
 }

@@ -104,6 +104,38 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
 	},
 	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\FpsCharacter.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\FpsCharacter.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\FpsPlayerController.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\FpsPlayerController.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
 		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\HealthInterface.cpp",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
@@ -224,22 +256,6 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
 	},
 	{
-		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\project_goldfishCharacter.cpp",
-		"arguments": [
-			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
-			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
-		],
-		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
-	},
-	{
-		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\project_goldfishCharacter.h",
-		"arguments": [
-			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
-			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
-		],
-		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
-	},
-	{
 		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\project_goldfishGameMode.cpp",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
@@ -249,22 +265,6 @@
 	},
 	{
 		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\project_goldfishGameMode.h",
-		"arguments": [
-			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
-			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
-		],
-		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
-	},
-	{
-		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\project_goldfishPlayerController.cpp",
-		"arguments": [
-			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
-			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"
-		],
-		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
-	},
-	{
-		"file": "C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\Source\\project_goldfish\\project_goldfishPlayerController.h",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kevin\\Desktop\\Projects\\Unreal Engine\\Git\\project_goldfish\\.vscode\\compileCommands_Default\\project_goldfish.1.rsp"

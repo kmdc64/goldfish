@@ -2,7 +2,7 @@
 
 
 #include "TP_WeaponComponent.h"
-#include "project_goldfishCharacter.h"
+#include "FpsCharacter.h"
 #include "project_goldfishProjectile.h"
 #include "GameFramework/PlayerController.h"
 #include "Camera/PlayerCameraManager.h"
@@ -22,13 +22,13 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 
 void UTP_WeaponComponent::Fire()
 {
-	if (character == nullptr || character->GetController() == nullptr)
+	if (m_pCharacter == nullptr || m_pCharacter->GetController() == nullptr)
 	{
 		return;
 	}
 
-	APlayerController* playerController = Cast<APlayerController>(character->GetController());
-	const FVector playerLocation = character->GetActorLocation();
+	APlayerController* playerController = Cast<APlayerController>(m_pCharacter->GetController());
+	const FVector playerLocation = m_pCharacter->GetActorLocation();
 	const FRotator spawnRotation = playerController->PlayerCameraManager->GetCameraRotation();
 	
 	UWorld* const world = GetWorld();
@@ -109,26 +109,26 @@ bool UTP_WeaponComponent::CanReload()
 	return true;
 }
 
-void UTP_WeaponComponent::AttachWeapon(Aproject_goldfishCharacter* TargetCharacter)
+void UTP_WeaponComponent::AttachWeapon(AFpsCharacter* TargetCharacter)
 {
-	character = TargetCharacter;
+	m_pCharacter = TargetCharacter;
 
 	// Check that the character is valid, and has no rifle yet
-	if (character == nullptr || character->GetHasRifle())
+	if (m_pCharacter == nullptr || m_pCharacter->GetHasRifle())
 	{
 		return;
 	}
 
 	// Attach the weapon to the First Person Character
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-	USkeletalMeshComponent* pCharacterMesh = character->GetMesh1P();
+	USkeletalMeshComponent* pCharacterMesh = m_pCharacter->GetMesh1P();
 	AttachToComponent(pCharacterMesh, AttachmentRules, FName(TEXT("WeaponSocket")));
 	
 	// switch bHasRifle so the animation blueprint can switch to another animation set
-	character->SetHasRifle(true);
+	m_pCharacter->SetHasRifle(true);
 
 	// Set up action bindings
-	if (APlayerController* playerController = Cast<APlayerController>(character->GetController()))
+	if (APlayerController* playerController = Cast<APlayerController>(m_pCharacter->GetController()))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
 		{
@@ -151,12 +151,12 @@ float UTP_WeaponComponent::GetShotDamage()
 
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if (character == nullptr)
+	if (m_pCharacter == nullptr)
 	{
 		return;
 	}
 
-	if (APlayerController* playerController = Cast<APlayerController>(character->GetController()))
+	if (APlayerController* playerController = Cast<APlayerController>(m_pCharacter->GetController()))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
 		{

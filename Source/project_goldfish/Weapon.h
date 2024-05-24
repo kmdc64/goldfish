@@ -19,7 +19,7 @@ class PROJECT_GOLDFISH_API AWeapon : public AActor
 public:
 	// The currently equipped weapon component.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"))
-	UTP_WeaponComponent* m_pWeaponComponent;
+	UTP_WeaponComponent* PWeaponComponent;
 
 protected:
 	// Called when the game starts or when spawned

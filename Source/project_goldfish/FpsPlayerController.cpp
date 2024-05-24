@@ -1,10 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 
-#include "project_goldfishPlayerController.h"
+#include "FpsPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 
-void Aproject_goldfishPlayerController::BeginPlay()
+void AFpsPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 

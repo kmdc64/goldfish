@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "project_goldfishGameMode.h"
-#include "project_goldfishCharacter.h"
+#include "FpsCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 Aproject_goldfishGameMode::Aproject_goldfishGameMode()

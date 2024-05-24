@@ -7,85 +7,99 @@
 #include "HealthInterface.h"
 #include "Enemy.generated.h"
 
+DECLARE_DYNAMIC_DELEGATE(FOnEnemyKilled);
+ 
+/**
+ * AEnemy:
+ * Manages an enemy Actor.
+ */
 UCLASS()
 class PROJECT_GOLDFISH_API AEnemy : public ACharacter, public IHealthInterface
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
+	// Sets default values for this character's properties.
 	AEnemy();
 
-	DECLARE_DYNAMIC_DELEGATE(FOnEnemyKilled);
-
+	// Triggers when the enemy has died.
 	FOnEnemyKilled OnEnemyKilled;
 
-	bool InArena = false;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
+	// Called every frame.
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
+	// Called to bind functionality to input.
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void Attack();
-
-	// IHealthInterface methods.
+	// IHealthInterface: Deal damage to the enemy.
 	virtual void ReceiveDamage(int amount) override;
+	// IHealthInterface: Restore health.
 	virtual void RecoverHealth(int amount) override;
 
+	// Perform an attack.
+	void Attack();
+
+	/*
+	Getter functions.
+	*/
+	// Return the enemy's attack montage.
 	UAnimMontage* GetAttackMontage();
+	// Return the enemy's attack range.
 	float GetAttackRange();
+	// Return the enemy's base speed stat.
 	float GetBaseSpeed();
 
+	// True if the enemy is active in the arena.
+	bool BInArena = false;
+
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
-	UAnimMontage* m_pAttackMontage;
+	// Called when the game starts or when spawned.
+	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
-	UAnimMontage* m_pDeathMontage;
+	UAnimMontage* PAttackMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	UAnimMontage* PDeathMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sound")
-	TArray<USoundBase*> m_pAttackSounds;
+	TArray<USoundBase*> PAttackSounds;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sound")
-	TArray<USoundBase*> m_pDeathSounds;
+	TArray<USoundBase*> PDeathSounds;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sound")
-	USoundBase* m_pDamagedSound;
+	USoundBase* PDamagedSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float m_fInitialHealth = 30.0f;
+	float FInitialHealth = 30.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float m_fAttackDamage = 33.4f;
+	float FAttackDamage = 33.4f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float m_fAttackRange = 100.0f;
+	float FAttackRange = 100.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float m_fBaseSpeed = 0.0f;
+	float FBaseSpeed = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float m_iPointsPerHitTaken = 10;
+	float IPointsPerHitTaken = 10;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float m_iPointsFromDeath = 150;
+	float IPointsFromDeath = 150;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	float m_fHealth = 0.0f;
+	float FHealth = 0.0f;
 
 private:
 	FVector m_vSpawnLocation;
 
+	// Trigger the death sequence.
 	void Die();
+	// Reset the enemy and return to the pool awaiting reuse.
 	void ReturnToPool();
 
 	UFUNCTION()
-	void HandleOnMontageEnded(UAnimMontage* montage, bool wasInterrupted);
+	void HandleOnMontageEnded(UAnimMontage* pMontage, bool bWasInterrupted);
 };

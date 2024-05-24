@@ -22,7 +22,9 @@ class PROJECT_GOLDFISH_API IHealthInterface
 	GENERATED_BODY()
 
 public:
+	// Remove health from the damageable object.
 	virtual void ReceiveDamage(int amount);
+	// Add health to the damageable object.
 	virtual void RecoverHealth(int amount);
 public:
 };

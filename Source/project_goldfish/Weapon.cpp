@@ -10,8 +10,8 @@ AWeapon::AWeapon()
 	PrimaryActorTick.bCanEverTick = true;
 
 	m_pMesh = CreateDefaultSubobject<UStaticMeshComponent>("Weapon Mesh");
-	m_pWeaponComponent = CreateDefaultSubobject<UTP_WeaponComponent>("Weapon Component");
-	m_pMesh->SetupAttachment(m_pWeaponComponent);
+	PWeaponComponent = CreateDefaultSubobject<UTP_WeaponComponent>("Weapon Component");
+	m_pMesh->SetupAttachment(PWeaponComponent);
 }
 
 // Called when the game starts or when spawned

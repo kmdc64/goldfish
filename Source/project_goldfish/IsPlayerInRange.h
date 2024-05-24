@@ -7,7 +7,8 @@
 #include "IsPlayerInRange.generated.h"
 
 /**
- * 
+ * UIsPlayerInRange:
+ * Behavior for checkign if the player (B) is in range of Enemy (A).
  */
 UCLASS()
 class PROJECT_GOLDFISH_API UIsPlayerInRange : public UBTService_BlackboardBase
