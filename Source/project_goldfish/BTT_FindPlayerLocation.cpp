@@ -12,26 +12,23 @@ UBTT_FindPlayerLocation::UBTT_FindPlayerLocation(FObjectInitializer const& a_pOb
     NodeName = TEXT("Find Player Location");
 }
 
-EBTNodeResult::Type UBTT_FindPlayerLocation::ExecuteTask(UBehaviorTreeComponent& a_pTreeComp, uint8* a_pNodeMem)
+EBTNodeResult::Type UBTT_FindPlayerLocation::ExecuteTask(UBehaviorTreeComponent& pTreeComp, uint8* pNodeMem)
 {
-    // Get AI Controller.
-    auto const pAIController = Cast<AEnemy_Controller>(a_pTreeComp.GetAIOwner());
+    UWorld* pWorld = GetWorld();
+    AEnemy_Controller* const pAIController = Cast<AEnemy_Controller>(pTreeComp.GetAIOwner());
+    UNavigationSystemV1* pNavSystem = UNavigationSystemV1::GetCurrent(pWorld);
 
-    // Get Nav system.
-    UNavigationSystemV1* pNavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-
-    // Get player reference.
-    APlayerController* pPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+    APlayerController* pPlayerController = UGameplayStatics::GetPlayerController(pWorld, 0);
     APawn* pPlayer = pPlayerController->GetPawn();
 
     if (pNavSystem != nullptr)
     {
         // If valid, set target location to player location.
-        pAIController->GetBlackboard()->SetValueAsVector(EnemyKeys::targetLocation, pPlayer->GetActorLocation());
+        pAIController->GetBlackboard()->SetValueAsVector(EnemyKeys::TargetLocation, pPlayer->GetActorLocation());
     }
 
     // Finish execution.
-    FinishLatentTask(a_pTreeComp, EBTNodeResult::Succeeded);
+    FinishLatentTask(pTreeComp, EBTNodeResult::Succeeded);
 
     return EBTNodeResult::Succeeded;
 }

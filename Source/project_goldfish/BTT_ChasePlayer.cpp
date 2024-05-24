@@ -12,25 +12,20 @@ UBTT_ChasePlayer::UBTT_ChasePlayer(FObjectInitializer const& a_pObjectInit)
     NodeName = TEXT("Chase Player");
 }
 
-EBTNodeResult::Type UBTT_ChasePlayer::ExecuteTask(UBehaviorTreeComponent& a_pTreeComp, uint8* a_pNodeMem)
+EBTNodeResult::Type UBTT_ChasePlayer::ExecuteTask(UBehaviorTreeComponent& pTreeComp, uint8* pNodeMem)
 {
-    // Get AI Controller.
-    auto const pAIController = Cast<AEnemy_Controller>(a_pTreeComp.GetAIOwner());
-
-    // Get Nav system.
+    AEnemy_Controller* const pAIController = Cast<AEnemy_Controller>(pTreeComp.GetAIOwner());
     UNavigationSystemV1* pNavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
 
     if (pNavSystem != nullptr)
     {
-        // Get location of the player.
-        FVector pLocation  = pAIController->GetBlackboard()->GetValueAsVector(EnemyKeys::targetLocation);
-
-        // Tell the AI to move towards the player.
+        // Get location of the player and tell the AI to move towards it.
+        FVector pLocation  = pAIController->GetBlackboard()->GetValueAsVector(EnemyKeys::TargetLocation);
         pAIController->MoveToLocation(pLocation);
     }
 
     // Finish execution.
-    FinishLatentTask(a_pTreeComp, EBTNodeResult::Succeeded);
+    FinishLatentTask(pTreeComp, EBTNodeResult::Succeeded);
 
     return EBTNodeResult::Succeeded;
 }

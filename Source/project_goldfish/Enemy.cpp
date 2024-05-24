@@ -3,7 +3,7 @@
 
 #include "Enemy.h"
 #include "Kismet/GameplayStatics.h"
-#include "project_goldfishCharacter.h"
+#include "FpsCharacter.h"
 
 
 // Sets default values
@@ -18,7 +18,7 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	m_fHealth = m_fInitialHealth;
+	FHealth = FInitialHealth;
 	m_vSpawnLocation = GetActorLocation();
 	
 	// Bind events.
@@ -32,70 +32,70 @@ void AEnemy::Tick(float DeltaTime)
 }
 
 // Called to bind functionality to input
-void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AEnemy::SetupPlayerInputComponent(UInputComponent* pPlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	Super::SetupPlayerInputComponent(pPlayerInputComponent);
 }
 
-void AEnemy::ReceiveDamage(int amount)
+void AEnemy::ReceiveDamage(int iAmount)
 {
-	if (m_fHealth <= 0)
+	if (FHealth <= 0)
 		return; // Already dead or dying.
 
-	m_fHealth -= amount;
+	FHealth -= iAmount;
 
 	// Play reaction to damage sfx.
-	UWorld* world = GetWorld();
-	UGameplayStatics::PlaySoundAtLocation(world, m_pDamagedSound, GetActorLocation());
+	UWorld* pWorld = GetWorld();
+	UGameplayStatics::PlaySoundAtLocation(pWorld, PDamagedSound, GetActorLocation());
 
 	// Reward points for damaging an enemy.
-	Aproject_goldfishCharacter* pPlayerCharacter = Cast<Aproject_goldfishCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-	pPlayerCharacter->Stats->AddPoints(m_iPointsPerHitTaken);
+	AFpsCharacter* pPlayerCharacter = Cast<AFpsCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	pPlayerCharacter->Stats->AddPoints(IPointsPerHitTaken);
 
-	if (m_fHealth <= 0)
+	if (FHealth <= 0)
 	{
 		Die();
 	}
 }
 
-void AEnemy::RecoverHealth(int amount)
+void AEnemy::RecoverHealth(int iAmount)
 {
-	m_fHealth += amount;
+	FHealth += iAmount;
 }
 
 UAnimMontage* AEnemy::GetAttackMontage()
 {
-    return m_pAttackMontage;
+    return PAttackMontage;
 }
 
 float AEnemy::GetAttackRange()
 {
-    return m_fAttackRange;
+    return FAttackRange;
 }
 
 float AEnemy::GetBaseSpeed()
 {
-	return m_fBaseSpeed;
+	return FBaseSpeed;
 }
 
 void AEnemy::Attack()
 {
-	UWorld* world = GetWorld();
+	UWorld* pWorld = GetWorld();
 
 	// Play the attack animation.
 	UAnimInstance* pAnimInstance = GetMesh()->GetAnimInstance();
 	if (pAnimInstance != nullptr)
 	{
-		pAnimInstance->Montage_Play(m_pAttackMontage);
+		pAnimInstance->Montage_Play(PAttackMontage);
 	}
 
 	// Play an attack sfx.
-	USoundBase* attackSound = m_pAttackSounds[FMath::RandRange(0, m_pAttackSounds.Num() - 1)];
-	UGameplayStatics::PlaySoundAtLocation(world, attackSound, GetActorLocation());
+	USoundBase* pAttackSound = PAttackSounds[FMath::RandRange(0, PAttackSounds.Num() - 1)];
+	UGameplayStatics::PlaySoundAtLocation(pWorld, pAttackSound, GetActorLocation());
 
 	// Deal damage to the player.
-	Aproject_goldfishCharacter* pPlayer = Cast<Aproject_goldfishCharacter>(UGameplayStatics::GetPlayerCharacter(world, 0));
-	pPlayer->ReceiveDamage(m_fAttackDamage);
+	AFpsCharacter* pPlayer = Cast<AFpsCharacter>(UGameplayStatics::GetPlayerCharacter(pWorld, 0));
+	pPlayer->ReceiveDamage(FAttackDamage);
 }
 
 void AEnemy::Die()
@@ -104,20 +104,20 @@ void AEnemy::Die()
 	UAnimInstance* pAnimInstance = GetMesh()->GetAnimInstance();
 	if (pAnimInstance != nullptr)
 	{
-		if (!pAnimInstance->Montage_IsPlaying(m_pDeathMontage))
+		if (!pAnimInstance->Montage_IsPlaying(PDeathMontage))
 		{
-			pAnimInstance->Montage_Play(m_pDeathMontage);
+			pAnimInstance->Montage_Play(PDeathMontage);
 		}
 	}
 
 	// Play a death sfx.
-	UWorld* world = GetWorld();
-	USoundBase* deathSound = m_pDeathSounds[FMath::RandRange(0, m_pDeathSounds.Num() - 1)];
-	UGameplayStatics::PlaySoundAtLocation(world, deathSound, GetActorLocation());
+	UWorld* pWorld = GetWorld();
+	USoundBase* pDeathSound = PDeathSounds[FMath::RandRange(0, PDeathSounds.Num() - 1)];
+	UGameplayStatics::PlaySoundAtLocation(pWorld, pDeathSound, GetActorLocation());
 
 	// Reward points for killing an enemy.
-	Aproject_goldfishCharacter* pPlayerCharacter = Cast<Aproject_goldfishCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-	pPlayerCharacter->Stats->AddPoints(m_iPointsFromDeath);
+	AFpsCharacter* pPlayerCharacter = Cast<AFpsCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	pPlayerCharacter->Stats->AddPoints(IPointsFromDeath);
 }
 
 void AEnemy::ReturnToPool()
@@ -130,14 +130,14 @@ void AEnemy::ReturnToPool()
 	TeleportTo(m_vSpawnLocation, GetActorRotation());
 
 	// Reset health and combat status.
-	m_fHealth = m_fInitialHealth;
-	InArena = false;
+	FHealth = FInitialHealth;
+	BInArena = false;
 }
 
 
-void AEnemy::HandleOnMontageEnded(UAnimMontage* montage, bool wasInterrupted)
+void AEnemy::HandleOnMontageEnded(UAnimMontage* pMontage, bool bWasInterrupted)
 {
-	if (montage->GetName().Contains("Death"))
+	if (pMontage->GetName().Contains("Death"))
 	{
 		ReturnToPool();
 	}

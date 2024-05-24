@@ -7,7 +7,8 @@
 #include "BTT_FindPlayerLocation.generated.h"
 
 /**
- * 
+ * UBTT_FindPlayerLocation:
+ * Behavior for finding the player location and setting it as a target value.
  */
 UCLASS()
 class PROJECT_GOLDFISH_API UBTT_FindPlayerLocation : public UBTTask_BlackboardBase
@@ -16,5 +17,5 @@ class PROJECT_GOLDFISH_API UBTT_FindPlayerLocation : public UBTTask_BlackboardBa
 	
 public:
 	UBTT_FindPlayerLocation(FObjectInitializer const& a_pObjectInit);
-	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& a_pTreeComp, uint8* a_pNodeMem);
+	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& pTreeComp, uint8* pNodeMem);
 };

@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "project_goldfishCharacter.h"
+#include "FpsCharacter.h"
 #include "project_goldfishProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
@@ -20,7 +20,7 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 //////////////////////////////////////////////////////////////////////////
 // Aproject_goldfishCharacter
 
-Aproject_goldfishCharacter::Aproject_goldfishCharacter()
+AFpsCharacter::AFpsCharacter()
 {
 	// Character doesn't have a rifle at start
 	bHasRifle = false;
@@ -47,22 +47,22 @@ Aproject_goldfishCharacter::Aproject_goldfishCharacter()
 	Stats = CreateDefaultSubobject<APlayerStats>(TEXT("PlayerStats"));
 }
 
-void Aproject_goldfishCharacter::BeginPlay()
+void AFpsCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
 
 	// Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (APlayerController* pPlayerController = Cast<APlayerController>(Controller))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(pPlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
 
 	// Bind events
-	GetMesh1P()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &Aproject_goldfishCharacter::HandleOnMontageEnd);
+	GetMesh1P()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &AFpsCharacter::HandleOnMontageEnd);
 
 	// Equip the default weapon
 	EquipWeapon();
@@ -70,8 +70,8 @@ void Aproject_goldfishCharacter::BeginPlay()
 	// Add the HUD to our viewport.
 	if (m_cPlayerHud != nullptr)
 	{
-		UUserWidget* Hud = CreateWidget<UUserWidget>(Cast<APlayerController>(GetController()), m_cPlayerHud);
-		Hud->AddToViewport(9999);
+		UUserWidget* pHud = CreateWidget<UUserWidget>(Cast<APlayerController>(GetController()), m_cPlayerHud);
+		pHud->AddToViewport(9999);
 	}
 
 	// Set our starting stats.
@@ -83,7 +83,7 @@ void Aproject_goldfishCharacter::BeginPlay()
 
 //////////////////////////////////////////////////////////////////////////// Input
 
-void Aproject_goldfishCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AFpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
@@ -93,16 +93,16 @@ void Aproject_goldfishCharacter::SetupPlayerInputComponent(UInputComponent* Play
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		// Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &Aproject_goldfishCharacter::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFpsCharacter::Move);
 
 		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &Aproject_goldfishCharacter::Look);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFpsCharacter::Look);
 
 		// Shoot
-		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &Aproject_goldfishCharacter::Shoot);
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &AFpsCharacter::Shoot);
 
 		// Reload
-		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &Aproject_goldfishCharacter::Reload);
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &AFpsCharacter::Reload);
 	}
 	else
 	{
@@ -111,7 +111,7 @@ void Aproject_goldfishCharacter::SetupPlayerInputComponent(UInputComponent* Play
 }
 
 
-void Aproject_goldfishCharacter::Move(const FInputActionValue& Value)
+void AFpsCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -124,7 +124,7 @@ void Aproject_goldfishCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void Aproject_goldfishCharacter::Look(const FInputActionValue& Value)
+void AFpsCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
@@ -137,17 +137,17 @@ void Aproject_goldfishCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void Aproject_goldfishCharacter::SetHasRifle(bool bNewHasRifle)
+void AFpsCharacter::SetHasRifle(bool bNewHasRifle)
 {
 	bHasRifle = bNewHasRifle;
 }
 
-bool Aproject_goldfishCharacter::GetHasRifle()
+bool AFpsCharacter::GetHasRifle()
 {
 	return bHasRifle;
 }
 
-void Aproject_goldfishCharacter::Shoot()
+void AFpsCharacter::Shoot()
 {
 	UAnimInstance* pAnimInstance = GetMesh1P()->GetAnimInstance();
 	if (pAnimInstance != nullptr)
@@ -168,7 +168,7 @@ void Aproject_goldfishCharacter::Shoot()
 	}
 }
 
-void Aproject_goldfishCharacter::Reload()
+void AFpsCharacter::Reload()
 {
 	// Check if the weapon is reloadable.
 	if (!m_pCurrentlyEquippedWeapon->CanReload())
@@ -185,7 +185,7 @@ void Aproject_goldfishCharacter::Reload()
 	}
 }
 
-void Aproject_goldfishCharacter::EquipWeapon()
+void AFpsCharacter::EquipWeapon()
 {
 	APlayerController* pController = Cast<APlayerController>(GetController());
 	const FRotator pRotation = pController->PlayerCameraManager->GetCameraRotation();
@@ -194,17 +194,16 @@ void Aproject_goldfishCharacter::EquipWeapon()
 	FActorSpawnParameters pSpawnParams;
 	pSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	// Spawn weapon
+	// Spawn & set weapon
 	m_currentWeapon = GetWorld()->SpawnActor<AWeapon>(m_cWeapon, pLocation, pRotation, pSpawnParams);
-	// Set weapon
 	m_pCurrentlyEquippedWeapon = Cast<UTP_WeaponComponent>(m_currentWeapon->GetComponentByClass(UTP_WeaponComponent::StaticClass()));
 	m_pCurrentlyEquippedWeapon->AttachWeapon(this);
 }
 
-void Aproject_goldfishCharacter::HandleOnMontageEnd(UAnimMontage* a_pMontage, bool a_bInterrupted)
+void AFpsCharacter::HandleOnMontageEnd(UAnimMontage* pMontage, bool bInterrupted)
 {
 	// Get reload montage logic...
-	if (a_pMontage->GetName().Contains("reload") && !a_bInterrupted)
+	if (pMontage->GetName().Contains("reload") && !bInterrupted)
 	{
 		// Check a weapon is equipped.
 		if (m_pCurrentlyEquippedWeapon == nullptr)
@@ -214,19 +213,19 @@ void Aproject_goldfishCharacter::HandleOnMontageEnd(UAnimMontage* a_pMontage, bo
 	}
 }
 
-void Aproject_goldfishCharacter::ReceiveDamage(int amount)
+void AFpsCharacter::ReceiveDamage(int iAmount)
 {
-	m_fHealth -= amount;
+	m_fHealth -= iAmount;
 
 	if (m_fHealth <= 0)
 	{
-		UWorld* world = GetWorld();
-		FName levelName = FName(world->GetName());
-		UGameplayStatics::OpenLevel(world, levelName, true);
+		UWorld* pWorld = GetWorld();
+		FName levelName = FName(pWorld->GetName());
+		UGameplayStatics::OpenLevel(pWorld, levelName, true);
 	}
 }
 
-void Aproject_goldfishCharacter::RecoverHealth(int amount)
+void AFpsCharacter::RecoverHealth(int iAmount)
 {
-	m_fHealth += amount;
+	m_fHealth += iAmount;
 }

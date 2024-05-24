@@ -15,45 +15,46 @@ public:
 	// Sets default values for this actor's properties
 	AEnemyDirector();
 
-	TArray<AActor*> m_pEnemies;
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Management")
-	TArray<FVector> m_pSpawnLocations;
+	TArray<FVector> PSpawnLocations;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Waves")
-	int m_iInitialWaveSpawnCount = 5;
+	int IInitialWaveSpawnCount = 5;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Waves")
-	int m_iCurrentWave = 0;
+	int ICurrentWave = 0;
 
 	// The last wave in which enemy count will grow.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Waves")
-	int m_iFinalGrowthWave = 50;
+	int IFinalGrowthWave = 50;
 
 	// The maximum amount of enemies a wave can have.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Waves")
-	int m_iMaxEnemiesInWave = 666;
+	int IMaxEnemiesInWave = 666;
 
 	// The final amount of enemies that can spawn into the arena at one time.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Waves")
-	int m_iMaxEnemyArenaCapacity = 50;
+	int IMaxEnemyArenaCapacity = 50;
 
 	// The wave at which maximum enemy arena capacity is reached.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Waves")
-	int m_iWaveMaxEnemyArenaCapacityReached = 22;
+	int IWaveMaxEnemyArenaCapacityReached = 22;
 
 	// The current maximum amount of enemies that can spawn into the arena at one time.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Waves")
-	int m_iMaxEnemiesInArena = 5;
+	int IMaxEnemiesInArena = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Waves")
-	float m_fSecondsBeforeWaveStarts = 4.0f;
+	float FSecondsBeforeWaveStarts = 4.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Waves")
-	float m_fSecondsBeforeWaveEnds = 4.0f;
+	float FSecondsBeforeWaveEnds = 4.0f;
 
-	int m_iCurrentWaveSize;
-	int m_iWaveKills = 0;
+	UFUNCTION()
+	void ConfirmEnemyKilled();
 
 	void AttemptSpawnEnemies();
 	int UpdateWaveSize();
@@ -66,8 +67,9 @@ public:
 	TArray<AActor*> GetAllEnemiesInPool();
 	void ModifyWaveSpeeds();
 
-	UFUNCTION()
-	void ConfirmEnemyKilled();
+	int ICurrentWaveSize;
+	int IWaveKills = 0;
+	TArray<AActor*> PEnemies;
 
 protected:
 	// Called when the game starts or when spawned
@@ -88,10 +90,6 @@ protected:
 	// The current minimum speed an enemy can move at (ignoring base speed modifiers).
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Speed")
 	float m_fGlobalMinWalkSpeed = 70.0f;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 	
 private:
 	bool m_bWaveIntermission;

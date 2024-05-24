@@ -9,7 +9,7 @@
 #include "Weapon.h"
 #include "HealthInterface.h"
 #include "PlayerStats.h"
-#include "project_goldfishCharacter.generated.h"
+#include "FpsCharacter.generated.h"
 
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -21,7 +21,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class Aproject_goldfishCharacter : public ACharacter, public IHealthInterface
+class AFpsCharacter : public ACharacter, public IHealthInterface
 {
 	GENERATED_BODY()
 
@@ -54,7 +54,7 @@ class Aproject_goldfishCharacter : public ACharacter, public IHealthInterface
 	TSubclassOf<class UUserWidget> m_cPlayerHud;
 	
 public:
-	Aproject_goldfishCharacter();
+	AFpsCharacter();
 
 	// Stat tracker.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

@@ -8,7 +8,8 @@
 #include "BTT_Attack.generated.h"
 
 /**
- * 
+ * UBTT_Attack:
+ * Attack behavior.
  */
 UCLASS()
 class PROJECT_GOLDFISH_API UBTT_Attack : public UBTTask_BlackboardBase

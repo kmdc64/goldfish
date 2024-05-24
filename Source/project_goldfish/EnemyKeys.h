@@ -5,6 +5,6 @@
 
 namespace EnemyKeys
 {
-    TCHAR const* const targetLocation = TEXT("TargetLocation");
-    TCHAR const* const isPlayerInRange = TEXT("IsPlayerInRange");
+    TCHAR const* const TargetLocation = TEXT("TargetLocation");
+    TCHAR const* const IsPlayerInRange = TEXT("IsPlayerInRange");
 }

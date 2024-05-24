@@ -7,7 +7,8 @@
 #include "Enemy_Controller.generated.h"
  
 /**
- * 
+ * AEnemy_Controller:
+ * Manages enemy AI behaviors.
  */
 UCLASS()
 class PROJECT_GOLDFISH_API AEnemy_Controller : public AAIController
@@ -15,20 +16,19 @@ class PROJECT_GOLDFISH_API AEnemy_Controller : public AAIController
 	GENERATED_BODY()
 	
 public:
-	AEnemy_Controller(FObjectInitializer const& a_pObjectInit);
+	AEnemy_Controller(FObjectInitializer const& pObjectInit);
 
 	// Overrides
 	void BeginPlay() override;
-	void OnPossess(APawn* a_pPawn) override;
+	void OnPossess(APawn* pPawn) override;
 
 	class UBlackboardComponent* GetBlackboard() const;
 
-	// Tree components
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI")
-	class UBehaviorTreeComponent* m_pBehaviorTreeComponent;
+	class UBehaviorTreeComponent* PBehaviorTreeComponent;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI")
-	class UBehaviorTree* m_pBehaviorTree;
+	class UBehaviorTree* PBehaviorTree;
 
 private:
 	class UBlackboardComponent* m_pBlackboard;

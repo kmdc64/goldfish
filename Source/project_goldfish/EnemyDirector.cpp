@@ -5,7 +5,7 @@
 #include "Enemy.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "project_goldfishCharacter.h"
+#include "FpsCharacter.h"
 
 // Sets default values
 AEnemyDirector::AEnemyDirector()
@@ -24,13 +24,13 @@ void AEnemyDirector::AttemptSpawnEnemies()
 	if (pooledEnemiesCount == 0)
 		return; // No enemies available to take from the pool.
 
-	int leftToKill = m_iCurrentWaveSize - m_iWaveKills;
+	int leftToKill = ICurrentWaveSize - IWaveKills;
 	int leftToSpawn = leftToKill - arenaEnemiesCount;
 	if (leftToSpawn <= 0)
 		return;
 	
 	// Limit the amount of enemies we can spawn at once to our chosen limit, or the pool size.
-	int arenaCapacityLeft = m_iMaxEnemiesInArena - arenaEnemiesCount;
+	int arenaCapacityLeft = IMaxEnemiesInArena - arenaEnemiesCount;
 	if (arenaCapacityLeft <= 0)
 		return;
 
@@ -46,37 +46,37 @@ void AEnemyDirector::AttemptSpawnEnemies()
 
 		// Disable collisions temporarily in case enemies spawn on top of one another.
 		pEnemy->SetActorEnableCollision(false);
-		auto spawnLocation = m_pSpawnLocations[FMath::RandRange(0, m_pSpawnLocations.Num() - 1)];
+		auto spawnLocation = PSpawnLocations[FMath::RandRange(0, PSpawnLocations.Num() - 1)];
 		auto enemyRotation = pEnemy->GetActorRotation();
 		pEnemy->TeleportTo(spawnLocation, enemyRotation);
-		pEnemy->InArena = true;
+		pEnemy->BInArena = true;
 		pEnemy->SetActorEnableCollision(true);
 	}
 }
 
 int AEnemyDirector::UpdateWaveSize()
 {
-	int totalEnemyGrowth = m_iMaxEnemiesInWave - m_iInitialWaveSpawnCount;
-	float rateOfGrowth = (float)totalEnemyGrowth / m_iFinalGrowthWave;
-	int newEnemyCount = (m_iCurrentWave - 1) * rateOfGrowth;
-	m_iCurrentWaveSize = UKismetMathLibrary::Min(m_iMaxEnemiesInWave, (m_iInitialWaveSpawnCount + newEnemyCount)); 
-    return m_iCurrentWaveSize;
+	int totalEnemyGrowth = IMaxEnemiesInWave - IInitialWaveSpawnCount;
+	float rateOfGrowth = (float)totalEnemyGrowth / IFinalGrowthWave;
+	int newEnemyCount = (ICurrentWave - 1) * rateOfGrowth;
+	ICurrentWaveSize = UKismetMathLibrary::Min(IMaxEnemiesInWave, (IInitialWaveSpawnCount + newEnemyCount)); 
+    return ICurrentWaveSize;
 }
 
 int AEnemyDirector::UpdateEnemyArenaCapacity()
 {
-    int totalCapacityGrowth = m_iMaxEnemyArenaCapacity - m_iMaxEnemiesInArena;
-	float rateOfGrowth = (float)totalCapacityGrowth / m_iWaveMaxEnemyArenaCapacityReached;
-	int newCapacity = (m_iCurrentWave - 1) * rateOfGrowth;
-	m_iMaxEnemiesInArena = UKismetMathLibrary::Min(m_iMaxEnemyArenaCapacity, (m_iMaxEnemiesInArena + newCapacity));
-	return m_iMaxEnemiesInArena;
+    int totalCapacityGrowth = IMaxEnemyArenaCapacity - IMaxEnemiesInArena;
+	float rateOfGrowth = (float)totalCapacityGrowth / IWaveMaxEnemyArenaCapacityReached;
+	int newCapacity = (ICurrentWave - 1) * rateOfGrowth;
+	IMaxEnemiesInArena = UKismetMathLibrary::Min(IMaxEnemyArenaCapacity, (IMaxEnemiesInArena + newCapacity));
+	return IMaxEnemiesInArena;
 }
 
 void AEnemyDirector::UpdateWaveParameters()
 {
 	// Reset and move to the next wave.
-	m_iCurrentWave++;
-	m_iWaveKills = 0;
+	ICurrentWave++;
+	IWaveKills = 0;
 	UpdateWaveSize();
 	UpdateEnemyArenaCapacity();
 
@@ -96,7 +96,7 @@ void AEnemyDirector::NextWave()
 	{
 		ModifyWaveSpeeds();
 		m_bWaveIntermission = false;
-	}, m_fSecondsBeforeWaveStarts, false);
+	}, FSecondsBeforeWaveStarts, false);
 }
 
 void AEnemyDirector::EndWave()
@@ -108,14 +108,14 @@ void AEnemyDirector::EndWave()
 	world->GetTimerManager().SetTimer(pTimerHandle, [&]()
 	{
 		NextWave();
-	}, m_fSecondsBeforeWaveEnds, false);
+	}, FSecondsBeforeWaveEnds, false);
 }
 
 void AEnemyDirector::SpawnMoreEnemies()
 {
 	int enemiesInArenaCount = GetAllEnemiesInArena().Num();
-	int leftToSpawn = (m_iCurrentWaveSize - m_iWaveKills) - enemiesInArenaCount;
-	bool arenaFull = enemiesInArenaCount == m_iMaxEnemiesInArena;
+	int leftToSpawn = (ICurrentWaveSize - IWaveKills) - enemiesInArenaCount;
+	bool arenaFull = enemiesInArenaCount == IMaxEnemiesInArena;
 	if ((leftToSpawn > 0) && !arenaFull)
 	{
 		AttemptSpawnEnemies();
@@ -125,10 +125,10 @@ void AEnemyDirector::SpawnMoreEnemies()
 TArray<AActor*> AEnemyDirector::GetAllEnemiesInArena()
 {
 	TArray<AActor*> pEnemiesInArena = TArray<AActor*>();
-	for (AActor* actor : m_pEnemies)
+	for (AActor* actor : PEnemies)
 	{
 		AEnemy* pEnemy = Cast<AEnemy>(actor);
-		if (pEnemy->InArena)
+		if (pEnemy->BInArena)
 		{
 			pEnemiesInArena.Add(actor);
 		}
@@ -140,10 +140,10 @@ TArray<AActor*> AEnemyDirector::GetAllEnemiesInArena()
 TArray<AActor*> AEnemyDirector::GetAllEnemiesInPool()
 {
     TArray<AActor*> pEnemiesInPool = TArray<AActor*>();
-	for (AActor* actor : m_pEnemies)
+	for (AActor* actor : PEnemies)
 	{
 		AEnemy* pEnemy = Cast<AEnemy>(actor);
-		if (!pEnemy->InArena)
+		if (!pEnemy->BInArena)
 		{
 			pEnemiesInPool.Add(actor);
 		}
@@ -154,9 +154,9 @@ TArray<AActor*> AEnemyDirector::GetAllEnemiesInPool()
 
 void AEnemyDirector::ModifyWaveSpeeds()
 {
-	for (int i = 0; i < m_pEnemies.Num(); ++i)
+	for (int i = 0; i < PEnemies.Num(); ++i)
 	{
-		AEnemy* pEnemy = Cast<AEnemy>(m_pEnemies[i]);
+		AEnemy* pEnemy = Cast<AEnemy>(PEnemies[i]);
 		float maxWalkSpeed = FMath::RandRange(m_fGlobalMinWalkSpeed, m_fGlobalMaxWalkSpeed);
 		float finalSpeed = maxWalkSpeed + pEnemy->GetBaseSpeed();
 		pEnemy->GetCharacterMovement()->MaxWalkSpeed = finalSpeed;
@@ -165,9 +165,9 @@ void AEnemyDirector::ModifyWaveSpeeds()
 
 void AEnemyDirector::ConfirmEnemyKilled()
 {
-	m_iWaveKills++;
+	IWaveKills++;
 
-	if (m_iWaveKills >= m_iCurrentWaveSize)
+	if (IWaveKills >= ICurrentWaveSize)
 	{
 		EndWave();
 	}
@@ -180,7 +180,7 @@ void AEnemyDirector::BeginPlay()
 	
 	// Get all instances of enemy actors and store in the enemy list.
 	auto world = GetWorld();
-	UGameplayStatics::GetAllActorsOfClass(world, AEnemy::StaticClass(), m_pEnemies);
+	UGameplayStatics::GetAllActorsOfClass(world, AEnemy::StaticClass(), PEnemies);
 
 	NextWave();
 }

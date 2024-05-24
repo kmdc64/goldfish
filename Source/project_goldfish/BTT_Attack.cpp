@@ -21,7 +21,7 @@ EBTNodeResult::Type UBTT_Attack::ExecuteTask(UBehaviorTreeComponent& pTreeCompon
     if (AttackMontageFinished(pEnemy))
     {
         // Get bool value from key to check if we can attack or not.
-        bool bCanAttack = pAiController->GetBlackboard()->GetValueAsBool(EnemyKeys::isPlayerInRange);
+        bool bCanAttack = pAiController->GetBlackboard()->GetValueAsBool(EnemyKeys::IsPlayerInRange);
         if (bCanAttack)
         {
             pEnemy->Attack();
@@ -40,5 +40,6 @@ bool UBTT_Attack::AttackMontageFinished(AEnemy* pEnemy)
     {
         return pAnimInstance->Montage_GetIsStopped(pEnemy->GetAttackMontage());
     }
+    
     return false;
 }

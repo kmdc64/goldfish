@@ -4,15 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "project_goldfishPlayerController.generated.h"
+#include "FpsPlayerController.generated.h"
 
 class UInputMappingContext;
 
 /**
- *
+ * AFpsPlayerController:
+ * 
  */
 UCLASS()
-class PROJECT_GOLDFISH_API Aproject_goldfishPlayerController : public APlayerController
+class PROJECT_GOLDFISH_API AFpsPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
