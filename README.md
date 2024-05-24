@@ -2,6 +2,8 @@
  
 A wave-based zombie survival FPS project made with Unreal Engine 5.3.
 
+![Goldfish Clip 01](https://github.com/kmdc64/goldfish/assets/155844683/777ab1bd-807a-4bb8-9190-6cb41234a727)
+
 The aim of this project is to recreate the classic Call Of Duty Zombies mode experience. It is being developed using C++ & Blueprints.
 
 Credits:
