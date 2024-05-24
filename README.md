@@ -8,3 +8,22 @@ Credits:
 "FP Arms" (https://skfb.ly/orLQA) by DJMaesen is licensed under Creative Commons Attribution (https://creativecommons.org/licenses/by/4.0/)
 "Pistol" (https://skfb.ly/6REZM) by DJMaesen is licensed under Creative Commons Attribution (https://creativecommons.org/licenses/by/4.0/)
 "City Of Brass" 3D Assets by UpperCut Games - (https://www.unrealengine.com/marketplace/en-US/profile/UppercutGames?count=20&sortBy=effectiveDate&sortDir=DESC&start=0)
+
+Completed mechanics:
+- Wave system with scaling difficulty.
+- Zombie enemies that get progressively faster.
+- FPS Player Controller.
+- Equippable weapons with shoot/reload functionality.
+- Initial Greyboxed HUD UI.
+- Health system.
+- Points system.
+
+Future mechanics:
+- Implement weapon damage falloff over a range.
+- Implement melee.
+- Implement weapon holstering (carry 2 weapons at once and switch between them).
+- Enemy variation.
+- Special waves that include boss enemies.
+- Menus & options screen.
+- Spend points on opening areas of the map, buying new weapons etc.
+- Temporary Powerups dropped from enemies.

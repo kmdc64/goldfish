@@ -1,0 +1,9 @@
+v0.0.1.0 pre-alpha
+[+] Wave system with scaling difficulty implemented.
+[+] Base zombie enemies implemented.
+[+] FPS Player controller implemented.
+[+] Greyboxed HUD UI implemented. Currently hooked up via blueprints binding functions, however this will be optimised in the future by updating the UI via events.
+[+] Health system implemented.
+[+] Weapon system & test pistol implemented.
+[+] Points implemented.
+[+] Test map environment built with spawn points for enemies.
