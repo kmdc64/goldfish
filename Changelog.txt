@@ -1,3 +1,7 @@
+v0.0.2.0 pre-alpha
+[+] Reworked the HUD to listen for events firing to update UI elements.
+[+] Added a HUD damage indicator that flashes briefly when the player receives damage.
+
 v0.0.1.0 pre-alpha
 [+] Wave system with scaling difficulty implemented.
 [+] Base zombie enemies implemented.

@@ -72,6 +72,9 @@ void AFpsCharacter::BeginPlay()
 	{
 		UUserWidget* pHud = CreateWidget<UUserWidget>(Cast<APlayerController>(GetController()), m_cPlayerHud);
 		pHud->AddToViewport(9999);
+
+		// Update Health UI.
+		OnPlayerHealthChanged.Broadcast(m_fHealth, m_fHealthMax);
 	}
 
 	// Set our starting stats.
@@ -195,7 +198,7 @@ void AFpsCharacter::EquipWeapon()
 	pSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	// Spawn & set weapon
-	m_currentWeapon = GetWorld()->SpawnActor<AWeapon>(m_cWeapon, pLocation, pRotation, pSpawnParams);
+	m_currentWeapon = GetWorld()->SpawnActor<AWeapon>(m_cStartingWeapon, pLocation, pRotation, pSpawnParams);
 	m_pCurrentlyEquippedWeapon = Cast<UTP_WeaponComponent>(m_currentWeapon->GetComponentByClass(UTP_WeaponComponent::StaticClass()));
 	m_pCurrentlyEquippedWeapon->AttachWeapon(this);
 }
@@ -216,6 +219,7 @@ void AFpsCharacter::HandleOnMontageEnd(UAnimMontage* pMontage, bool bInterrupted
 void AFpsCharacter::ReceiveDamage(int iAmount)
 {
 	m_fHealth -= iAmount;
+	OnPlayerHealthChanged.Broadcast(m_fHealth, m_fHealthMax);
 
 	if (m_fHealth <= 0)
 	{
@@ -228,4 +232,5 @@ void AFpsCharacter::ReceiveDamage(int iAmount)
 void AFpsCharacter::RecoverHealth(int iAmount)
 {
 	m_fHealth += iAmount;
+	OnPlayerHealthChanged.Broadcast(m_fHealth, m_fHealthMax);
 }
