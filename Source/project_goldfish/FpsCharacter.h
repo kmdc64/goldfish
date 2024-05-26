@@ -20,6 +20,8 @@ struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerHealthChanged, int, iCurrentHealth, int, iMaxHealth);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponChanged, FString, sWeaponName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAmmoChanged, int, iCurrentAmmo, int, iMaxAmmo);
 
 UCLASS(config=Game)
 class AFpsCharacter : public ACharacter, public IHealthInterface
@@ -30,8 +32,17 @@ public:
 	AFpsCharacter();
 
 	// Event delegate functions
+
 	UPROPERTY(BlueprintAssignable)
 	FOnPlayerHealthChanged OnPlayerHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnWeaponChanged OnWeaponChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAmmoChanged OnAmmoChanged;
+
+	// End of event delegate functions
 
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
@@ -107,6 +118,9 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	UFUNCTION(BlueprintCallable, Category = "HUD")
+	void RefreshUI();
+
 public:
 	UFUNCTION()
 	void HandleOnMontageEnd(UAnimMontage* a_pMontage, bool a_bInterrupted);
@@ -126,11 +140,14 @@ public:
 
 	void Shoot();
 	void Reload();
-	void EquipWeapon();
+	void EquipWeapon(TSubclassOf<class AActor> cWeapon);
 
 	/** IHealthInterface methods. **/
 	virtual void ReceiveDamage(int amount) override;
 	virtual void RecoverHealth(int amount) override;
+
+	// Fire OnAmmoChanged event when rele
+	void AmmoChanged();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)

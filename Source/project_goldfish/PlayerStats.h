@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "PlayerStats.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPointsChanged, int, iPoints);
+
 /**
  * APlayerStats:
  * Manages a player's in-game stats.
@@ -17,6 +19,10 @@ class PROJECT_GOLDFISH_API APlayerStats : public AActor
 
 public:
 	APlayerStats();
+
+	// Event delegate functions
+	UPROPERTY(BLueprintAssignable)
+	FOnPointsChanged OnPointsChanged;
 
 	const int MaximumPoints = 999999;
 

@@ -16,7 +16,7 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 {
 	// Initialise the ammo.
 	m_iCurrentAmmo = m_iClipSize;
-	m_iTotalAmmo = m_iMaxAmmo;
+	m_iHolsteredAmmo = m_iMaxAmmo;
 }
 
 
@@ -94,15 +94,15 @@ void UTP_WeaponComponent::Reload()
 {
 	// Fill the clip with available ammo.
 	int reloadAmount = m_iClipSize - m_iCurrentAmmo;
-	reloadAmount = UKismetMathLibrary::Min(reloadAmount, m_iTotalAmmo);
-	m_iTotalAmmo -= reloadAmount;
+	reloadAmount = UKismetMathLibrary::Min(reloadAmount, m_iHolsteredAmmo);
+	m_iHolsteredAmmo -= reloadAmount;
 	m_iCurrentAmmo += reloadAmount;
 }
 
 bool UTP_WeaponComponent::CanReload()
 {
 	bool clipFull = m_iCurrentAmmo == m_iClipSize;
-	bool ammoAvailable = m_iTotalAmmo > 0;
+	bool ammoAvailable = m_iHolsteredAmmo > 0;
 	if (clipFull || !ammoAvailable)
 		return false;
 
@@ -147,6 +147,16 @@ void UTP_WeaponComponent::AttachWeapon(AFpsCharacter* TargetCharacter)
 float UTP_WeaponComponent::GetShotDamage()
 {
     return FMath::RandRange(m_fDamagePerShotMin, m_fDamagePerShotMax);
+}
+
+int UTP_WeaponComponent::GetHolsteredAmmoAvailable()
+{
+return m_iHolsteredAmmo;
+}
+
+int UTP_WeaponComponent::GetCurrentMagazineAmmo()
+{
+    return m_iCurrentAmmo;
 }
 
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
