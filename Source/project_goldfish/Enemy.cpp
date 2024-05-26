@@ -86,6 +86,9 @@ void AEnemy::Attack()
 	UAnimInstance* pAnimInstance = GetMesh()->GetAnimInstance();
 	if (pAnimInstance != nullptr)
 	{
+		if (pAnimInstance->Montage_IsPlaying(PDeathMontage))
+			return; // Early out if the enemy is in the middle of dying.
+
 		pAnimInstance->Montage_Play(PAttackMontage);
 	}
 

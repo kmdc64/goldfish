@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "EnemyDirector.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWaveChanged, int, iWave);
+
 UCLASS()
 class PROJECT_GOLDFISH_API AEnemyDirector : public AActor
 {
@@ -14,6 +16,13 @@ class PROJECT_GOLDFISH_API AEnemyDirector : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AEnemyDirector();
+
+	// Event delegate functions
+
+	UPROPERTY(BlueprintAssignable)
+	FOnWaveChanged OnWaveChanged;
+
+	// End of event delegate functions
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -55,6 +64,9 @@ public:
 
 	UFUNCTION()
 	void ConfirmEnemyKilled();
+
+	UFUNCTION(BlueprintCallable, Category="HUD")
+	void RefreshUI();
 
 	void AttemptSpawnEnemies();
 	int UpdateWaveSize();

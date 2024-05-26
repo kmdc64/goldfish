@@ -6,6 +6,7 @@
 APlayerStats::APlayerStats()
 {
     PrimaryActorTick.bCanEverTick = false;
+    m_iPoints = 0;
 }
 
 int APlayerStats::GetPoints()
