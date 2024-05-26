@@ -38,6 +38,12 @@ public:
 	// Get a damage value within the damage range.
 	float GetShotDamage();
 
+	// Get the ammo in the weapon's current magazine.
+	int GetCurrentMagazineAmmo();
+
+	// Get the holstered ammo available for the weapon.
+	int GetHolsteredAmmoAvailable();
+
 	// Name of the weapon.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information", meta=(AllowPrivateAccess = "true"))
 	FString DisplayName;
@@ -99,7 +105,7 @@ protected:
 	int m_iCurrentAmmo = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ammo")
-	int m_iTotalAmmo = 0;
+	int m_iHolsteredAmmo = 0;
 
 private:
 	/** The Character holding this weapon*/

@@ -88,6 +88,8 @@ void AEnemyDirector::UpdateWaveParameters()
 void AEnemyDirector::NextWave()
 {
 	UpdateWaveParameters();
+
+	OnWaveChanged.Broadcast(ICurrentWave);
 	
 	// Delay spawning of enemies.
 	FTimerHandle pTimerHandle;
@@ -171,6 +173,11 @@ void AEnemyDirector::ConfirmEnemyKilled()
 	{
 		EndWave();
 	}
+}
+
+void AEnemyDirector::RefreshUI()
+{
+	OnWaveChanged.Broadcast(ICurrentWave);
 }
 
 // Called when the game starts or when spawned

@@ -65,13 +65,16 @@ void AFpsCharacter::BeginPlay()
 	GetMesh1P()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &AFpsCharacter::HandleOnMontageEnd);
 
 	// Equip the default weapon
-	EquipWeapon();
+	EquipWeapon(m_cStartingWeapon);
 
 	// Add the HUD to our viewport.
 	if (m_cPlayerHud != nullptr)
 	{
 		UUserWidget* pHud = CreateWidget<UUserWidget>(Cast<APlayerController>(GetController()), m_cPlayerHud);
 		pHud->AddToViewport(9999);
+
+		// Update Health UI.
+		OnPlayerHealthChanged.Broadcast(m_fHealth, m_fHealthMax);
 	}
 
 	// Set our starting stats.
@@ -137,6 +140,13 @@ void AFpsCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void AFpsCharacter::RefreshUI()
+{
+	OnPlayerHealthChanged.Broadcast(m_fHealth, m_fHealthMax);
+	OnWeaponChanged.Broadcast(m_pCurrentlyEquippedWeapon->DisplayName);
+	AmmoChanged();
+}
+
 void AFpsCharacter::SetHasRifle(bool bNewHasRifle)
 {
 	bHasRifle = bNewHasRifle;
@@ -165,6 +175,7 @@ void AFpsCharacter::Shoot()
 	if (m_pCurrentlyEquippedWeapon != nullptr)
 	{
 		m_pCurrentlyEquippedWeapon->Fire();
+		AmmoChanged();
 	}
 }
 
@@ -185,7 +196,7 @@ void AFpsCharacter::Reload()
 	}
 }
 
-void AFpsCharacter::EquipWeapon()
+void AFpsCharacter::EquipWeapon(TSubclassOf<class AActor> cWeapon)
 {
 	APlayerController* pController = Cast<APlayerController>(GetController());
 	const FRotator pRotation = pController->PlayerCameraManager->GetCameraRotation();
@@ -195,9 +206,11 @@ void AFpsCharacter::EquipWeapon()
 	pSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	// Spawn & set weapon
-	m_currentWeapon = GetWorld()->SpawnActor<AWeapon>(m_cWeapon, pLocation, pRotation, pSpawnParams);
+	m_currentWeapon = GetWorld()->SpawnActor<AWeapon>(cWeapon, pLocation, pRotation, pSpawnParams);
 	m_pCurrentlyEquippedWeapon = Cast<UTP_WeaponComponent>(m_currentWeapon->GetComponentByClass(UTP_WeaponComponent::StaticClass()));
 	m_pCurrentlyEquippedWeapon->AttachWeapon(this);
+
+	OnWeaponChanged.Broadcast(m_pCurrentlyEquippedWeapon->DisplayName);
 }
 
 void AFpsCharacter::HandleOnMontageEnd(UAnimMontage* pMontage, bool bInterrupted)
@@ -210,12 +223,14 @@ void AFpsCharacter::HandleOnMontageEnd(UAnimMontage* pMontage, bool bInterrupted
 			return;
 
 		m_pCurrentlyEquippedWeapon->Reload();
+		AmmoChanged();
 	}
 }
 
 void AFpsCharacter::ReceiveDamage(int iAmount)
 {
 	m_fHealth -= iAmount;
+	OnPlayerHealthChanged.Broadcast(m_fHealth, m_fHealthMax);
 
 	if (m_fHealth <= 0)
 	{
@@ -228,4 +243,12 @@ void AFpsCharacter::ReceiveDamage(int iAmount)
 void AFpsCharacter::RecoverHealth(int iAmount)
 {
 	m_fHealth += iAmount;
+	OnPlayerHealthChanged.Broadcast(m_fHealth, m_fHealthMax);
+}
+
+void AFpsCharacter::AmmoChanged()
+{
+	int iCurrentMagazineAmmo = m_pCurrentlyEquippedWeapon->GetCurrentMagazineAmmo();
+	int iHolsteredAmmo = m_pCurrentlyEquippedWeapon->GetHolsteredAmmoAvailable();
+	OnAmmoChanged.Broadcast(iCurrentMagazineAmmo, iHolsteredAmmo);
 }

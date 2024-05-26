@@ -19,11 +19,30 @@ class UInputMappingContext;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerHealthChanged, int, iCurrentHealth, int, iMaxHealth);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponChanged, FString, sWeaponName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAmmoChanged, int, iCurrentAmmo, int, iMaxAmmo);
 
 UCLASS(config=Game)
 class AFpsCharacter : public ACharacter, public IHealthInterface
 {
 	GENERATED_BODY()
+	
+public:
+	AFpsCharacter();
+
+	// Event delegate functions
+
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerHealthChanged OnPlayerHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnWeaponChanged OnWeaponChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAmmoChanged OnAmmoChanged;
+
+	// End of event delegate functions
 
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
@@ -45,17 +64,6 @@ class AFpsCharacter : public ACharacter, public IHealthInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
-	// Reference to weapon
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta=(AllowPrivateAccess = "true"))
-	TSubclassOf<class AActor> m_cWeapon;
-
-	// Reference to the HUD
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD", meta=(AllowPrivateAccess = "true"))
-	TSubclassOf<class UUserWidget> m_cPlayerHud;
-	
-public:
-	AFpsCharacter();
-
 	// Stat tracker.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	APlayerStats* Stats;
@@ -68,12 +76,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* m_pShootMontage;
 
-	void Shoot();
-
-	void Reload();
-
-	void EquipWeapon();
-
 	// Reference to the equipped weapon
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	AWeapon* m_currentWeapon = 0;
@@ -81,22 +83,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UTP_WeaponComponent* m_pCurrentlyEquippedWeapon;
 
-	// Public fields
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float m_fHealthMax = 100.0f;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float m_fHealth = 100.0f;
 
-	// IHealthInterface methods.
-	virtual void ReceiveDamage(int amount) override;
-	virtual void RecoverHealth(int amount) override;
-
-protected:
-	virtual void BeginPlay();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	int m_iStartingPoints = 500;
-
-public:
-		
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
@@ -109,29 +101,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ReloadAction;
 
-	/** Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
-
-	/** Setter to set the bool */
-	UFUNCTION(BlueprintCallable, Category = Weapon)
-	void SetHasRifle(bool bNewHasRifle);
-
-	/** Getter for the bool */
-	UFUNCTION(BlueprintCallable, Category = Weapon)
-	bool GetHasRifle();
+	
 
 protected:
+	virtual void BeginPlay();
+
+	// APawn interface
+	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+	// End of APawn interface
+
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
-protected:
-	// APawn interface
-	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
-	// End of APawn interface
+	UFUNCTION(BlueprintCallable, Category = "HUD")
+	void RefreshUI();
 
 public:
 	UFUNCTION()
@@ -142,5 +130,35 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	/** Setter to set the bool */
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void SetHasRifle(bool bNewHasRifle);
+
+	/** Getter for the bool */
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	bool GetHasRifle();
+
+	void Shoot();
+	void Reload();
+	void EquipWeapon(TSubclassOf<class AActor> cWeapon);
+
+	/** IHealthInterface methods. **/
+	virtual void ReceiveDamage(int amount) override;
+	virtual void RecoverHealth(int amount) override;
+
+	// Fire OnAmmoChanged event when rele
+	void AmmoChanged();
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
+	int m_iStartingPoints = 500;
+
+	// The weapon the player will spawn into the level with.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<class AActor> m_cStartingWeapon;
+
+	// The player's HUD.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD", meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<class UUserWidget> m_cPlayerHud;
 };
 
