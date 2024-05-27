@@ -20,7 +20,7 @@ Completed mechanics:
 - Health system.
 - Points system.
 
-Future mechanics:
+Future/WIP mechanics:
 - Implement weapon damage falloff over a range.
 - Implement melee.
 - Implement weapon holstering (carry 2 weapons at once and switch between them).
