@@ -69,7 +69,7 @@ public:
 	UInputAction* PauseAction;
 
 	// TODO: Remove once pause logic is in place.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="To Delete")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "To Delete")
 	UWorld* PauseMap;
 
 	// Stat tracker.
@@ -78,24 +78,24 @@ public:
 
 	// Reload montage
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
-	UAnimMontage* m_pReloadMontage;
+	UAnimMontage* PReloadMontage;
 
 	// Shooting montage
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
-	UAnimMontage* m_pShootMontage;
+	UAnimMontage* PShootMontage;
 
 	// Reference to the equipped weapon
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	AWeapon* m_currentWeapon = 0;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+	AWeapon* PCurrentWeapon = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UTP_WeaponComponent* m_pCurrentlyEquippedWeapon;
+	UTP_WeaponComponent* PCurrentWeaponComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float m_fHealthMax = 100.0f;
+	float FHealthMax = 100.0f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	float m_fHealth = 100.0f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
+	float FHealth = 100.0f;
 
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -109,11 +109,53 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ReloadAction;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
-	bool bHasRifle;
-	
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Health)
+	bool m_bRegenAllowed = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Health)
+	float m_fHealthRegenPerSecond = 20.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Health)
+	float m_fSecondsTillRegen = 3.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
+	int m_iStartingPoints = 500;
+
+	// The weapon the player will spawn into the level with.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<class AActor> m_cStartingWeapon;
+
+	// The player's HUD.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD", meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<class UUserWidget> m_cPlayerHud;
+
+	float m_fSecondsSinceLastDamaged = 0.0f;
+
+public:
+	UFUNCTION()
+	void HandleOnMontageEnd(UAnimMontage* a_pMontage, bool a_bInterrupted);
+
+	/** Returns Mesh1P subobject **/
+	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
+
+	/** Returns FirstPersonCameraComponent subobject **/
+	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	void Shoot();
+	void Reload();
+	void EquipWeapon(TSubclassOf<class AActor> cWeapon);
+
+	/** IHealthInterface methods. **/
+	virtual void ReceiveDamage(int amount) override;
+	virtual void RecoverHealth(int amount) override;
+
+	// Fire OnAmmoChanged event when relevant.
+	void AmmoChanged();
 
 protected:
+	virtual void Tick(float fDeltaTime) override;
+
 	virtual void BeginPlay();
 
 	// APawn interface
@@ -132,44 +174,7 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	void RefreshUI();
 
-public:
-	UFUNCTION()
-	void HandleOnMontageEnd(UAnimMontage* a_pMontage, bool a_bInterrupted);
-
-	/** Returns Mesh1P subobject **/
-	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
-	/** Returns FirstPersonCameraComponent subobject **/
-	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
-	/** Setter to set the bool */
-	UFUNCTION(BlueprintCallable, Category = Weapon)
-	void SetHasRifle(bool bNewHasRifle);
-
-	/** Getter for the bool */
-	UFUNCTION(BlueprintCallable, Category = Weapon)
-	bool GetHasRifle();
-
-	void Shoot();
-	void Reload();
-	void EquipWeapon(TSubclassOf<class AActor> cWeapon);
-
-	/** IHealthInterface methods. **/
-	virtual void ReceiveDamage(int amount) override;
-	virtual void RecoverHealth(int amount) override;
-
-	// Fire OnAmmoChanged event when rele
-	void AmmoChanged();
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	int m_iStartingPoints = 500;
-
-	// The weapon the player will spawn into the level with.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta=(AllowPrivateAccess = "true"))
-	TSubclassOf<class AActor> m_cStartingWeapon;
-
-	// The player's HUD.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD", meta=(AllowPrivateAccess = "true"))
-	TSubclassOf<class UUserWidget> m_cPlayerHud;
+	// Heal to max over time, or wait until ready to regen.
+	void UpdateHealthRegen(float fDeltaTime);
 };
 

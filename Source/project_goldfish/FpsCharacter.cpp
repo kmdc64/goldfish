@@ -14,6 +14,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "PlayerStats.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -23,9 +24,8 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 AFpsCharacter::AFpsCharacter()
 {
-	// Character doesn't have a rifle at start
-	bHasRifle = false;
-	
+	PrimaryActorTick.bCanEverTick = true;
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 		
@@ -46,6 +46,11 @@ AFpsCharacter::AFpsCharacter()
 
 	// Create Player Stats component.
 	Stats = CreateDefaultSubobject<APlayerStats>(TEXT("PlayerStats"));
+}
+
+void AFpsCharacter::Tick(float fDeltaTime)
+{
+	UpdateHealthRegen(fDeltaTime);
 }
 
 void AFpsCharacter::BeginPlay()
@@ -75,7 +80,7 @@ void AFpsCharacter::BeginPlay()
 		pHud->AddToViewport(9999);
 
 		// Update Health UI.
-		OnPlayerHealthChanged.Broadcast(m_fHealth, m_fHealthMax);
+		OnPlayerHealthChanged.Broadcast(FHealth, FHealthMax);
 	}
 
 	// Set our starting stats.
@@ -158,19 +163,28 @@ void AFpsCharacter::Pause(const FInputActionValue & Value)
 
 void AFpsCharacter::RefreshUI()
 {
-	OnPlayerHealthChanged.Broadcast(m_fHealth, m_fHealthMax);
-	OnWeaponChanged.Broadcast(m_pCurrentlyEquippedWeapon->DisplayName);
+	OnPlayerHealthChanged.Broadcast(FHealth, FHealthMax);
+	OnWeaponChanged.Broadcast(PCurrentWeaponComponent->DisplayName);
 	AmmoChanged();
 }
 
-void AFpsCharacter::SetHasRifle(bool bNewHasRifle)
+void AFpsCharacter::UpdateHealthRegen(float fDeltaTime)
 {
-	bHasRifle = bNewHasRifle;
-}
+	if (!m_bRegenAllowed)
+		return;
 
-bool AFpsCharacter::GetHasRifle()
-{
-	return bHasRifle;
+	if (FHealth >= FHealthMax)
+		return; // Already at max health.
+
+	if (m_fSecondsSinceLastDamaged >= m_fSecondsTillRegen)
+	{
+		int amountToHeal =  FMath::CeilToInt(m_fHealthRegenPerSecond * fDeltaTime);
+		RecoverHealth(amountToHeal);
+	}
+	else
+	{
+		m_fSecondsSinceLastDamaged += fDeltaTime;
+	}
 }
 
 void AFpsCharacter::Shoot()
@@ -178,19 +192,19 @@ void AFpsCharacter::Shoot()
 	UAnimInstance* pAnimInstance = GetMesh1P()->GetAnimInstance();
 	if (pAnimInstance != nullptr)
 	{
-		if (m_pReloadMontage != nullptr && m_pShootMontage != nullptr)
+		if (PReloadMontage != nullptr && PShootMontage != nullptr)
 		{
 			// Interrupt reload montage.
-			pAnimInstance->Montage_Stop(0.2f, m_pReloadMontage);
+			pAnimInstance->Montage_Stop(0.2f, PReloadMontage);
 
 			// Play reload montage.
-			pAnimInstance->Montage_Play(m_pShootMontage, 1.0f);
+			pAnimInstance->Montage_Play(PShootMontage, 1.0f);
 		}
 	}
 
-	if (m_pCurrentlyEquippedWeapon != nullptr)
+	if (PCurrentWeaponComponent != nullptr)
 	{
-		m_pCurrentlyEquippedWeapon->Fire();
+		PCurrentWeaponComponent->Fire();
 		AmmoChanged();
 	}
 }
@@ -198,16 +212,16 @@ void AFpsCharacter::Shoot()
 void AFpsCharacter::Reload()
 {
 	// Check if the weapon is reloadable.
-	if (!m_pCurrentlyEquippedWeapon->CanReload())
+	if (!PCurrentWeaponComponent->CanReload())
 		return;
 
 	UAnimInstance* pAnimInstance = GetMesh1P()->GetAnimInstance();
 	if (pAnimInstance != nullptr)
 	{
-		if (m_pReloadMontage != nullptr)
+		if (PReloadMontage != nullptr)
 		{
 			// Play reload montage.
-			pAnimInstance->Montage_Play(m_pReloadMontage, 1.0f);
+			pAnimInstance->Montage_Play(PReloadMontage, 1.0f);
 		}
 	}
 }
@@ -222,11 +236,11 @@ void AFpsCharacter::EquipWeapon(TSubclassOf<class AActor> cWeapon)
 	pSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	// Spawn & set weapon
-	m_currentWeapon = GetWorld()->SpawnActor<AWeapon>(cWeapon, pLocation, pRotation, pSpawnParams);
-	m_pCurrentlyEquippedWeapon = Cast<UTP_WeaponComponent>(m_currentWeapon->GetComponentByClass(UTP_WeaponComponent::StaticClass()));
-	m_pCurrentlyEquippedWeapon->AttachWeapon(this);
+	PCurrentWeapon = GetWorld()->SpawnActor<AWeapon>(cWeapon, pLocation, pRotation, pSpawnParams);
+	PCurrentWeaponComponent = Cast<UTP_WeaponComponent>(PCurrentWeapon->GetComponentByClass(UTP_WeaponComponent::StaticClass()));
+	PCurrentWeaponComponent->AttachWeapon(this);
 
-	OnWeaponChanged.Broadcast(m_pCurrentlyEquippedWeapon->DisplayName);
+	OnWeaponChanged.Broadcast(PCurrentWeaponComponent->DisplayName);
 }
 
 void AFpsCharacter::HandleOnMontageEnd(UAnimMontage* pMontage, bool bInterrupted)
@@ -235,20 +249,21 @@ void AFpsCharacter::HandleOnMontageEnd(UAnimMontage* pMontage, bool bInterrupted
 	if (pMontage->GetName().Contains("reload") && !bInterrupted)
 	{
 		// Check a weapon is equipped.
-		if (m_pCurrentlyEquippedWeapon == nullptr)
+		if (PCurrentWeaponComponent == nullptr)
 			return;
 
-		m_pCurrentlyEquippedWeapon->Reload();
+		PCurrentWeaponComponent->Reload();
 		AmmoChanged();
 	}
 }
 
 void AFpsCharacter::ReceiveDamage(int iAmount)
 {
-	m_fHealth -= iAmount;
-	OnPlayerHealthChanged.Broadcast(m_fHealth, m_fHealthMax);
+	FHealth -= iAmount;
+	OnPlayerHealthChanged.Broadcast(FHealth, FHealthMax);
+	m_fSecondsSinceLastDamaged = 0.0f;
 
-	if (m_fHealth <= 0)
+	if (FHealth <= 0)
 	{
 		UWorld* pWorld = GetWorld();
 		FName levelName = FName(pWorld->GetName());
@@ -258,13 +273,14 @@ void AFpsCharacter::ReceiveDamage(int iAmount)
 
 void AFpsCharacter::RecoverHealth(int iAmount)
 {
-	m_fHealth += iAmount;
-	OnPlayerHealthChanged.Broadcast(m_fHealth, m_fHealthMax);
+	float newHealth = FHealth + iAmount;
+	FHealth = UKismetMathLibrary::Clamp(newHealth, 0.0f, FHealthMax);
+	OnPlayerHealthChanged.Broadcast(FHealth, FHealthMax);
 }
 
 void AFpsCharacter::AmmoChanged()
 {
-	int iCurrentMagazineAmmo = m_pCurrentlyEquippedWeapon->GetCurrentMagazineAmmo();
-	int iHolsteredAmmo = m_pCurrentlyEquippedWeapon->GetHolsteredAmmoAvailable();
+	int iCurrentMagazineAmmo = PCurrentWeaponComponent->GetCurrentMagazineAmmo();
+	int iHolsteredAmmo = PCurrentWeaponComponent->GetHolsteredAmmoAvailable();
 	OnAmmoChanged.Broadcast(iCurrentMagazineAmmo, iHolsteredAmmo);
 }

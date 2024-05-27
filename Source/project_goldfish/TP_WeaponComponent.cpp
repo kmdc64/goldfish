@@ -112,20 +112,13 @@ bool UTP_WeaponComponent::CanReload()
 void UTP_WeaponComponent::AttachWeapon(AFpsCharacter* TargetCharacter)
 {
 	m_pCharacter = TargetCharacter;
-
-	// Check that the character is valid, and has no rifle yet
-	if (m_pCharacter == nullptr || m_pCharacter->GetHasRifle())
-	{
+	if (m_pCharacter == nullptr)
 		return;
-	}
 
 	// Attach the weapon to the First Person Character
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 	USkeletalMeshComponent* pCharacterMesh = m_pCharacter->GetMesh1P();
 	AttachToComponent(pCharacterMesh, AttachmentRules, FName(TEXT("WeaponSocket")));
-	
-	// switch bHasRifle so the animation blueprint can switch to another animation set
-	m_pCharacter->SetHasRifle(true);
 
 	// Set up action bindings
 	if (APlayerController* playerController = Cast<APlayerController>(m_pCharacter->GetController()))
