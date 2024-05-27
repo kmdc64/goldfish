@@ -12,33 +12,32 @@ AEnemyDirector::AEnemyDirector()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 void AEnemyDirector::AttemptSpawnEnemies()
 {
-	TArray<AActor*> pooledEnemies = GetAllEnemiesInPool();
-	TArray<AActor*> arenaEnemies = GetAllEnemiesInArena();
-	int pooledEnemiesCount = pooledEnemies.Num();
-	int arenaEnemiesCount = arenaEnemies.Num();
-	if (pooledEnemiesCount == 0)
+	TArray<AActor*> pPooledEnemies = GetAllEnemiesInPool();
+	TArray<AActor*> pArenaEnemies = GetAllEnemiesInArena();
+	int iPooledEnemiesCount = pPooledEnemies.Num();
+	int iArenaEnemiesCount = pArenaEnemies.Num();
+	if (iPooledEnemiesCount == 0)
 		return; // No enemies available to take from the pool.
 
-	int leftToKill = ICurrentWaveSize - IWaveKills;
-	int leftToSpawn = leftToKill - arenaEnemiesCount;
-	if (leftToSpawn <= 0)
+	int iLeftToKill = ICurrentWaveSize - IWaveKills;
+	int iLeftToSpawn = iLeftToKill - iArenaEnemiesCount;
+	if (iLeftToSpawn <= 0)
 		return;
 	
 	// Limit the amount of enemies we can spawn at once to our chosen limit, or the pool size.
-	int arenaCapacityLeft = IMaxEnemiesInArena - arenaEnemiesCount;
-	if (arenaCapacityLeft <= 0)
+	int iArenaCapacityLeft = IMaxEnemiesInArena - iArenaEnemiesCount;
+	if (iArenaCapacityLeft <= 0)
 		return;
 
-	int amountSpawnable = UKismetMathLibrary::Min(arenaCapacityLeft, leftToSpawn);
-	amountSpawnable = UKismetMathLibrary::Min(pooledEnemiesCount, amountSpawnable);
-	for (int i = 0; i < amountSpawnable; ++i)
+	int iAmountSpawnable = UKismetMathLibrary::Min(iArenaCapacityLeft, iLeftToSpawn);
+	iAmountSpawnable = UKismetMathLibrary::Min(iPooledEnemiesCount, iAmountSpawnable);
+	for (int i = 0; i < iAmountSpawnable; ++i)
 	{
-		AEnemy* pEnemy = Cast<AEnemy>(pooledEnemies[i]);
+		AEnemy* pEnemy = Cast<AEnemy>(pPooledEnemies[i]);
 
 		// Bind delegates.
 		pEnemy->OnEnemyKilled.Clear();
@@ -56,19 +55,19 @@ void AEnemyDirector::AttemptSpawnEnemies()
 
 int AEnemyDirector::UpdateWaveSize()
 {
-	int totalEnemyGrowth = IMaxEnemiesInWave - IInitialWaveSpawnCount;
-	float rateOfGrowth = (float)totalEnemyGrowth / IFinalGrowthWave;
-	int newEnemyCount = (ICurrentWave - 1) * rateOfGrowth;
-	ICurrentWaveSize = UKismetMathLibrary::Min(IMaxEnemiesInWave, (IInitialWaveSpawnCount + newEnemyCount)); 
+	int iTotalEnemyGrowth = IMaxEnemiesInWave - IInitialWaveSpawnCount;
+	float fRateOfGrowth = (float)iTotalEnemyGrowth / IFinalGrowthWave;
+	int iNewEnemyCount = (ICurrentWave - 1) * fRateOfGrowth;
+	ICurrentWaveSize = UKismetMathLibrary::Min(IMaxEnemiesInWave, (IInitialWaveSpawnCount + iNewEnemyCount)); 
     return ICurrentWaveSize;
 }
 
 int AEnemyDirector::UpdateEnemyArenaCapacity()
 {
-    int totalCapacityGrowth = IMaxEnemyArenaCapacity - IMaxEnemiesInArena;
-	float rateOfGrowth = (float)totalCapacityGrowth / IWaveMaxEnemyArenaCapacityReached;
-	int newCapacity = (ICurrentWave - 1) * rateOfGrowth;
-	IMaxEnemiesInArena = UKismetMathLibrary::Min(IMaxEnemyArenaCapacity, (IMaxEnemiesInArena + newCapacity));
+    int iTotalCapacityGrowth = IMaxEnemyArenaCapacity - IMaxEnemiesInArena;
+	float fRateOfGrowth = (float)iTotalCapacityGrowth / IWaveMaxEnemyArenaCapacityReached;
+	int iNewCapacity = (ICurrentWave - 1) * fRateOfGrowth;
+	IMaxEnemiesInArena = UKismetMathLibrary::Min(IMaxEnemyArenaCapacity, (IMaxEnemiesInArena + iNewCapacity));
 	return IMaxEnemiesInArena;
 }
 
@@ -92,33 +91,28 @@ void AEnemyDirector::NextWave()
 	OnWaveChanged.Broadcast(ICurrentWave);
 	
 	// Delay spawning of enemies.
-	FTimerHandle pTimerHandle;
-	UWorld* world = GetWorld();
-	world->GetTimerManager().SetTimer(pTimerHandle, [&]()
-	{
-		ModifyWaveSpeeds();
-		m_bWaveIntermission = false;
-	}, FSecondsBeforeWaveStarts, false);
+	UWorld* pWorld = GetWorld();
+
+	ClearCurrentTimer();
+	pWorld->GetTimerManager().SetTimer(pTimerHandleCurrent, this, &AEnemyDirector::NextWaveDelayedCallback, FSecondsBeforeWaveStarts, false);
 }
 
 void AEnemyDirector::EndWave()
 {
 	// Delay next wave.
 	m_bWaveIntermission = true;
-	FTimerHandle pTimerHandle;
-	UWorld* world = GetWorld();
-	world->GetTimerManager().SetTimer(pTimerHandle, [&]()
-	{
-		NextWave();
-	}, FSecondsBeforeWaveEnds, false);
+	UWorld* pWorld = GetWorld();
+
+	ClearCurrentTimer();
+	pWorld->GetTimerManager().SetTimer(pTimerHandleCurrent, this, &AEnemyDirector::EndWaveDelayedCallback, FSecondsBeforeWaveEnds, false);
 }
 
 void AEnemyDirector::SpawnMoreEnemies()
 {
-	int enemiesInArenaCount = GetAllEnemiesInArena().Num();
-	int leftToSpawn = (ICurrentWaveSize - IWaveKills) - enemiesInArenaCount;
-	bool arenaFull = enemiesInArenaCount == IMaxEnemiesInArena;
-	if ((leftToSpawn > 0) && !arenaFull)
+	int iEnemiesInArenaCount = GetAllEnemiesInArena().Num();
+	int iLeftToSpawn = (ICurrentWaveSize - IWaveKills) - iEnemiesInArenaCount;
+	bool bArenaFull = iEnemiesInArenaCount == IMaxEnemiesInArena;
+	if ((iLeftToSpawn > 0) && !bArenaFull)
 	{
 		AttemptSpawnEnemies();
 	}
@@ -190,6 +184,26 @@ void AEnemyDirector::BeginPlay()
 	UGameplayStatics::GetAllActorsOfClass(world, AEnemy::StaticClass(), PEnemies);
 
 	NextWave();
+}
+
+void AEnemyDirector::EndWaveDelayedCallback()
+{
+	NextWave();
+}
+
+void AEnemyDirector::NextWaveDelayedCallback()
+{
+	ModifyWaveSpeeds();
+	m_bWaveIntermission = false;
+}
+
+void AEnemyDirector::ClearCurrentTimer()
+{
+	UWorld* pWorld = GetWorld();
+	if (pWorld == nullptr)
+		return;
+	
+	pWorld->GetTimerManager().ClearTimer(pTimerHandleCurrent);
 }
 
 // Called every frame

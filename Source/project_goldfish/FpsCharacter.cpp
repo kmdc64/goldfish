@@ -13,6 +13,7 @@
 #include "Weapon.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "PlayerStats.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -106,6 +107,9 @@ void AFpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 		// Reload
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &AFpsCharacter::Reload);
+
+		// Pause
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &AFpsCharacter::Pause);
 	}
 	else
 	{
@@ -138,6 +142,18 @@ void AFpsCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AFpsCharacter::Pause(const FInputActionValue & Value)
+{
+	// TODO: Replace this with actual pause menu logic.
+	UWorld* pWorld = GetWorld();
+	UGameInstance* pGameInstance = pWorld->GetGameInstance();
+	UGameplayStatics::OpenLevel(pWorld, FName("Map_Menu_MainMenu"), true);
+	
+	// Alternative quit flow.
+	// APlayerController* pSpecificPlayer = pWorld->GetFirstPlayerController();
+	// UKismetSystemLibrary::QuitGame(pWorld, pSpecificPlayer, EQuitPreference::Quit, true);
 }
 
 void AFpsCharacter::RefreshUI()

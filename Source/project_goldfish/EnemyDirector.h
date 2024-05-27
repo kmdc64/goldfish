@@ -79,13 +79,16 @@ public:
 	TArray<AActor*> GetAllEnemiesInPool();
 	void ModifyWaveSpeeds();
 
-	int ICurrentWaveSize;
+	int ICurrentWaveSize = 0;
 	int IWaveKills = 0;
 	TArray<AActor*> PEnemies;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void EndWaveDelayedCallback();
+	void NextWaveDelayedCallback();
 
 	// The final maximum speed an enemy can move at.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Speed")
@@ -102,7 +105,11 @@ protected:
 	// The current minimum speed an enemy can move at (ignoring base speed modifiers).
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Speed")
 	float m_fGlobalMinWalkSpeed = 70.0f;
+
+	FTimerHandle pTimerHandleCurrent;
 	
 private:
 	bool m_bWaveIntermission;
+
+	void ClearCurrentTimer();
 };
