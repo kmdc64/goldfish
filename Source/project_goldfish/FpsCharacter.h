@@ -64,6 +64,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
+	/** Pause Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* PauseAction;
+
+	// TODO: Remove once pause logic is in place.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="To Delete")
+	UWorld* PauseMap;
+
 	// Stat tracker.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	APlayerStats* Stats;
@@ -112,11 +120,14 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
 
-	/** Called for movement input */
+	/** Called for movement input. */
 	void Move(const FInputActionValue& Value);
 
-	/** Called for looking input */
+	/** Called for looking input. */
 	void Look(const FInputActionValue& Value);
+
+	/** Called for Pausing input. */
+	void Pause(const FInputActionValue& Value);
 
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	void RefreshUI();

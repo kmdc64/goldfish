@@ -49,7 +49,7 @@ void AEnemy::ReceiveDamage(int iAmount)
 	UGameplayStatics::PlaySoundAtLocation(pWorld, PDamagedSound, GetActorLocation());
 
 	// Reward points for damaging an enemy.
-	AFpsCharacter* pPlayerCharacter = Cast<AFpsCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	AFpsCharacter* pPlayerCharacter = Cast<AFpsCharacter>(pWorld->GetFirstPlayerController()->GetCharacter());
 	pPlayerCharacter->Stats->AddPoints(IPointsPerHitTaken);
 
 	if (FHealth <= 0)
