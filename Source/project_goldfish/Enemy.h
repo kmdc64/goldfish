@@ -8,6 +8,8 @@
 #include "Enemy.generated.h"
 
 DECLARE_DYNAMIC_DELEGATE(FOnEnemyKilled);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyDamaged, float, fDamageTaken);
+
  
 /**
  * AEnemy:
@@ -24,6 +26,10 @@ public:
 
 	// Triggers when the enemy has died.
 	FOnEnemyKilled OnEnemyKilled;
+
+	// Triggers when the enemy takes damage or receives health.
+	UPROPERTY(BlueprintAssignable)
+	FOnEnemyDamaged OnEnemyDamaged;
 
 	// Called every frame.
 	virtual void Tick(float DeltaTime) override;
@@ -90,7 +96,10 @@ protected:
 	float IPointsFromDeath = 150;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	float FHealth = 0.0f;
+	float FHealth = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UUserWidget> m_cDamageIndicator;
 
 private:
 	FVector m_vSpawnLocation;

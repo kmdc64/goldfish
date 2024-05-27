@@ -43,6 +43,7 @@ void AEnemy::ReceiveDamage(int iAmount)
 		return; // Already dead or dying.
 
 	FHealth -= iAmount;
+	OnEnemyDamaged.Broadcast((float)iAmount);
 
 	// Play reaction to damage sfx.
 	UWorld* pWorld = GetWorld();
