@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "DamageCounterPoolManager.h"
 #include "project_goldfishGameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -13,6 +14,9 @@ class Aproject_goldfishGameMode : public AGameModeBase
 
 public:
 	Aproject_goldfishGameMode();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ADamageCounterPoolManager* PDamageCounterPoolManager;
 };
 
 
